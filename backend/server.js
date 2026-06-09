@@ -1,5 +1,4 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
+const fetch = require("node-fetch");
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const app = express();
