@@ -516,7 +516,7 @@
 
     <script>
 (function () {
-    const GROK_KEY = "xai-qlmuBz0BL29v1QTFDC6LGbJuVeFauZXLBcSwUitmtVkYbmV3LwVrVVchQ88CfoR9EEJwmnpZA3Exwj5N";
+    
 
     const SYSTEM = `You are the Arena Oracle, a dramatic medieval fantasy chatbot for "Dark Valor: Arena", a fighting tournament website. 
 Keep replies short (2-4 sentences max). Use occasional ⚔️ 🏆 emojis. Speak in a slightly dramatic tone.
@@ -565,17 +565,11 @@ If asked anything unrelated to the arena/gaming, stay in character and redirect 
         history.push({ role: 'user', content: text });
 
         try {
-            const res = await fetch('https://api.x.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${GROK_KEY}`
-                },
-                body: JSON.stringify({
-                    model: 'grok-3-mini',
-                    messages: history
-                })
-            });
+            const res = await fetch('https://dark-valor-production.up.railway.app/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: history })
+});
             const data = await res.json();
             const reply = data.choices?.[0]?.message?.content || "⚔️ The Oracle's vision falters... try again.";
             history.push({ role: 'assistant', content: reply });
