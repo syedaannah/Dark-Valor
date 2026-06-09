@@ -129,8 +129,7 @@ app.post("/chat", async (req, res) => {
       body: JSON.stringify({ model: "grok-3-mini", messages: req.body.messages })
     });
     const data = await r.json();
-console.log("GROK RESPONSE:", JSON.stringify(data));
-res.json(data);
+    res.json(data);
   } catch(e) {
     console.error("Chat error:", e.message);
     res.status(500).json({ error: e.message });
