@@ -211,9 +211,10 @@
             }
 
             if (valid) {
-                document.getElementById('successMsg').style.display = 'block';
-                setTimeout(() => { window.location.href = 'index.html'; }, 1800);
-            }
+    sessionStorage.setItem('dv_user', 'user');
+    document.getElementById('successMsg').style.display = 'block';
+    setTimeout(() => { window.location.href = 'index.html'; }, 1800);
+}
         });
     </script>
 </body>

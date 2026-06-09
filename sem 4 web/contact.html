@@ -305,7 +305,8 @@
             <li><a href="inventory.html">Inventory</a></li>
             <li><a href="contact.html" class="active">Contact</a></li>
         </ul>
-        <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Logout</a>
+        <a href="login.html" class="btn btn-red" id="auth-btn" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Login</a>
+<script>if(sessionStorage.getItem('dv_user')){const b=document.getElementById('auth-btn');b.textContent='Logout';b.onclick=()=>sessionStorage.clear();}</script>
     </nav>
 
     <main class="page">
