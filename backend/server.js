@@ -117,25 +117,3 @@ app.delete("/registrations/:id", async (req, res) => {
     res.json({ message: "Deleted" });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
-
-
-app.post("/chat", async (req, res) => {
-  try {
-    const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "meta-llama/llama-3.2-3b-instruct:free",
-        messages: req.body.messages
-      })
-    });
-    const data = await r.json();
-    res.json(data);
-  } catch(e) {
-    console.error("Chat error:", e.message);
-    res.status(500).json({ error: e.message });
-  }
-});

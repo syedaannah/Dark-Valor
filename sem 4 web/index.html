@@ -514,22 +514,43 @@
     </script>
 
 
-    <script>
+   <script>
 (function () {
-    const SYSTEM = `You are the Arena Oracle, a dramatic medieval fantasy chatbot for "Dark Valor: Arena", a fighting tournament website. Keep replies short (2-4 sentences max). Use occasional ⚔️ 🏆 emojis. Speak in a slightly dramatic tone. The site has these pages: Home, Schedule, Players, Leaderboard, Tournament (registration), Inventory, Contact. Tournament registration fee is PKR 500 via EasyPaisa. Admin email: admin@arena.com. If asked anything unrelated to the arena/gaming, stay in character and redirect to arena topics.`;
-
-    const chatToggle   = document.getElementById('chat-toggle');
-    const chatWindow   = document.getElementById('chat-window');
-    const chatClose    = document.getElementById('chat-close-btn');
-    const chatInput    = document.getElementById('chat-input');
-    const chatSend     = document.getElementById('chat-send');
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close-btn');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
-    const chatBadge    = document.getElementById('chat-badge');
-    const quickBtns    = document.querySelectorAll('.quick-btn');
-
+    const chatBadge = document.getElementById('chat-badge');
+    const quickBtns = document.querySelectorAll('.quick-btn');
     if (!chatToggle) return;
     let chatOpen = false;
-    const history = [{ role: 'system', content: SYSTEM }];
+
+    const KB = [
+        { keys: ['faction','legion','dynasty','herald','heralds','which faction'], reply: '⚔️ Three factions battle for dominance:<br><br><strong style="color:var(--gold)">⚔️ Legion</strong> — Raw strength & iron discipline.<br><strong style="color:var(--gold)">🐉 Dynasty</strong> — Speed & cunning. Masters of deception.<br><strong style="color:var(--gold)">👁️ Heralds</strong> — Magic & strategy. They bend the battlefield.' },
+        { keys: ['register','registration','sign up','signup','how to join'], reply: '📋 Head to the <a href="register.html" style="color:var(--gold)">Register page</a> to sign up for a tournament. Choose your faction, fighter, and pay the $10 fee. ⚔️' },
+        { keys: ['rule','rules','how to play','format','match','combat'], reply: '📜 The tournament runs in <strong>3 brutal rounds</strong>. 6 warriors enter — only 1 claims the Eternal Throne. Check the <a href="tournament.html" style="color:var(--gold)">Tournament page</a> for the full bracket.' },
+        { keys: ['leaderboard','ranking','rank','top','best','standing'], reply: '🏆 Current rankings are on the <a href="lead.html" style="color:var(--gold)">Leaderboard page</a>. Rankings update after every match!' },
+        { keys: ['schedule','when','next match','upcoming','date','time'], reply: '📅 All upcoming battles are listed on the <a href="schedule.html" style="color:var(--gold)">Schedule page</a>. Arrive early — gates open 30 minutes before each bout.' },
+        { keys: ['player','players','fighter','warriors','who','roster'], reply: '⚔️ Meet all elite fighters on the <a href="players.html" style="color:var(--gold)">Players page</a>. Each profile includes faction, power level, and win record.' },
+        { keys: ['inventory','weapon','gear','equipment','item','sword','armor'], reply: '🗡️ Browse weapons and gear on the <a href="inventory.html" style="color:var(--gold)">Inventory page</a>. Each item carries its own power and rarity.' },
+        { keys: ['contact','email','reach','location','where','address','map'], reply: '📍 Reach us at <strong>arena@shadowfight4.com</strong> or call <strong>+1 (666) SHADOW-4</strong>. Visit the <a href="contact.html" style="color:var(--gold)">Contact page</a> for our location.' },
+        { keys: ['tournament','bracket','season','prize','champion','throne'], reply: '👑 Season IV is underway! 6 warriors clash for the <strong>Eternal Throne</strong>. View the bracket on the <a href="tournament.html" style="color:var(--gold)">Tournament page</a>.' },
+        { keys: ['payment','fee','cost','price','pay','jazzcash','easypaisa','crypto'], reply: '💰 Tournament registration fee is <strong>$10</strong>. We accept USDT, Bitcoin, Ethereum, JazzCash, EasyPaisa, and Stripe (all mock/demo). Register on the <a href="register.html" style="color:var(--gold)">Register page</a>.' },
+        { keys: ['hello','hi','hey','greetings','sup','yo'], reply: '⚔️ Greetings, warrior! The Arena Oracle stands ready. Ask me about fighters, factions, the tournament, schedule, or how to register!' },
+        { keys: ['help','what can you do','options','commands'], reply: '🔮 I can answer questions about:<br>• <strong>Factions</strong> — Legion, Dynasty, Heralds<br>• <strong>Registration</strong> & payment<br>• <strong>Tournament rules</strong> & bracket<br>• <strong>Schedule</strong> — Upcoming matches<br>• <strong>Players</strong> — Fighter profiles<br>• <strong>Leaderboard</strong> — Rankings<br>• <strong>Inventory</strong> — Weapons & gear' },
+        { keys: ['thanks','thank you','thx','ty','awesome','great'], reply: '🙏 The Oracle is honored to serve, warrior. May your blade stay sharp!' },
+        { keys: ['admin','login','password'], reply: '🔐 Admin access is restricted to Arena Command. Contact <strong>admin@arena.com</strong> for access.' },
+    ];
+
+    function getReply(input) {
+        const lower = input.toLowerCase();
+        for (const entry of KB) {
+            if (entry.keys.some(k => lower.includes(k))) return entry.reply;
+        }
+        return "🔮 The Oracle's vision is unclear on that matter. Try asking about <strong>factions</strong>, <strong>registration</strong>, <strong>tournament rules</strong>, <strong>schedule</strong>, or <strong>players</strong>.";
+    }
 
     function toggleChat() {
         chatOpen = !chatOpen;
@@ -549,29 +570,12 @@
         return div;
     }
 
-    async function sendMessage(text) {
+    function sendMessage(text) {
         if (!text.trim()) return;
         appendMsg(text, 'user');
         chatInput.value = '';
-        chatSend.disabled = true;
         const typing = appendMsg('Oracle is channeling...', 'typing');
-        history.push({ role: 'user', content: text });
-        try {
-            const res = await fetch('https://dark-valor-production.up.railway.app/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: history })
-            });
-            const data = await res.json();
-            const reply = data.choices?.[0]?.message?.content || "⚔️ The Oracle's vision falters... try again.";
-            history.push({ role: 'assistant', content: reply });
-            typing.remove();
-            appendMsg(reply, 'bot');
-        } catch(e) {
-            typing.remove();
-            appendMsg("⚔️ The Oracle is unreachable. Check your connection.", 'bot');
-        }
-        chatSend.disabled = false;
+        setTimeout(() => { typing.remove(); appendMsg(getReply(text), 'bot'); }, 600);
     }
 
     chatSend.addEventListener('click', () => sendMessage(chatInput.value));
