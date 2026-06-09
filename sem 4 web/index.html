@@ -1,0 +1,646 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dark Valor: Arena — Grand Tournament</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="theme.js"></script>
+
+    <style>
+        .hero {
+            background: linear-gradient(to bottom, rgba(5,2,2,0.45) 0%, rgba(8,3,3,0.75) 60%, var(--dark) 100%), url('game.jpg') center center / cover no-repeat;
+        }
+
+
+        /* ── Intro animations ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(36px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 140px;
+            }
+        }
+
+        /* Navbar slides in from top */
+        .navbar {
+            animation: slideDown 0.6s ease both;
+        }
+
+        /* Hero elements stagger up */
+        .hero-badge {
+            opacity: 0;
+            animation: fadeUp 0.7s 0.3s ease forwards;
+        }
+
+        .hero-title .t1 {
+            display: block;
+            opacity: 0;
+            animation: fadeUp 0.7s 0.55s ease forwards;
+        }
+
+        .hero-title .t2 {
+            display: block;
+            opacity: 0;
+            animation: fadeUp 0.7s 0.75s ease forwards;
+            background: linear-gradient(90deg, #e8230a, #ff6a00, #c9a227, #ff6a00, #e8230a);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeUp 0.7s 0.75s ease forwards, arenaGradient 4s 0.75s ease-in-out infinite alternate;
+            cursor: default;
+            transition: background-position 0.1s ease;
+        }
+
+            .hero-title .t2:hover {
+                animation: fadeUp 0.7s 0.75s ease forwards !important;
+            }
+
+        @keyframes arenaGradient {
+            0% {
+                background-position: 0% center;
+            }
+
+            100% {
+                background-position: 100% center;
+            }
+        }
+
+        .hero-sub {
+            opacity: 0;
+            animation: fadeUp 0.7s 1s ease forwards;
+        }
+
+        .hero-hr {
+            width: 0;
+            animation: expandWidth 0.8s 1.2s ease forwards;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            animation: fadeUp 0.7s 1.4s ease forwards;
+        }
+
+        /* About section fades in on scroll via JS class */
+        .about-text {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+            .about-text.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .stat {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+            .stat.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+    </style>
+
+    <!-- Chatbot CSS -->
+    <style>
+        #chat-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        }
+
+        #chat-toggle {
+            width: 58px;
+            height: 58px;
+            background: var(--red);
+            border: 2px solid #ff4422;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(232,35,10,.5);
+            transition: transform .2s, box-shadow .2s;
+            position: relative;
+        }
+
+            #chat-toggle:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 32px rgba(232,35,10,.8);
+            }
+
+        #chat-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background: var(--gold);
+            border-radius: 50%;
+            font-size: 9px;
+            font-family: var(--head);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        #chat-window {
+            display: none;
+            position: absolute;
+            bottom: 72px;
+            right: 0;
+            width: 340px;
+            background: var(--card, #0f0f0f);
+            border: 1px solid var(--border, #6a1808);
+            border-top: 2px solid var(--red, #e8230a);
+            box-shadow: 0 8px 40px rgba(0,0,0,.7);
+            flex-direction: column;
+        }
+
+            #chat-window.open {
+                display: flex;
+            }
+
+        .chat-header {
+            padding: 12px 16px;
+            background: rgba(232,35,10,.08);
+            border-bottom: 1px solid var(--border, #6a1808);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header-icon {
+            font-size: 20px;
+        }
+
+        .chat-header-info {
+            flex: 1;
+        }
+
+        .chat-header-title {
+            font-family: var(--head, 'Cinzel', serif);
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--text, #f0e8d8);
+            text-transform: uppercase;
+        }
+
+        .chat-header-sub {
+            font-size: 11px;
+            color: #4cff4c;
+            letter-spacing: 1px;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: var(--muted, #8a7a6a);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px 6px;
+            transition: color .2s;
+        }
+
+            .chat-close:hover {
+                color: var(--red, #e8230a);
+            }
+
+        #chat-messages {
+            flex: 1;
+            height: 280px;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+        }
+
+            #chat-messages::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            #chat-messages::-webkit-scrollbar-thumb {
+                background: var(--red, #e8230a);
+            }
+
+        .msg {
+            max-width: 85%;
+            padding: 9px 13px;
+            font-size: 13px;
+            line-height: 1.5;
+            font-family: var(--body, 'Rajdhani', sans-serif);
+        }
+
+            .msg.bot {
+                background: rgba(232,35,10,.07);
+                border: 1px solid rgba(106,24,8,.4);
+                align-self: flex-start;
+                color: var(--text, #f0e8d8);
+                border-left: 2px solid var(--red, #e8230a);
+            }
+
+            .msg.user {
+                background: rgba(201,162,39,.08);
+                border: 1px solid rgba(201,162,39,.25);
+                align-self: flex-end;
+                color: var(--text, #f0e8d8);
+                border-right: 2px solid var(--gold, #c9a227);
+            }
+
+            .msg.typing {
+                background: rgba(232,35,10,.05);
+                border: 1px solid rgba(106,24,8,.3);
+                align-self: flex-start;
+                color: var(--muted, #8a7a6a);
+                font-style: italic;
+                font-size: 12px;
+            }
+
+        .chat-input-row {
+            display: flex;
+            border-top: 1px solid var(--border, #6a1808);
+        }
+
+        #chat-input {
+            flex: 1;
+            background: rgba(255,255,255,.03);
+            border: none;
+            color: var(--text, #f0e8d8);
+            font-family: var(--body, 'Rajdhani', sans-serif);
+            font-size: 14px;
+            padding: 11px 14px;
+            outline: none;
+            border-right: 1px solid var(--border, #6a1808);
+        }
+
+            #chat-input::placeholder {
+                color: rgba(138,122,106,.4);
+            }
+
+        #chat-send {
+            background: var(--red, #e8230a);
+            border: none;
+            color: #fff;
+            font-family: var(--head, 'Cinzel', serif);
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 0 16px;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+            #chat-send:hover {
+                background: #c01a00;
+            }
+
+        .chat-quick-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 14px;
+            border-top: 1px solid rgba(106,24,8,.3);
+        }
+
+        .quick-btn {
+            font-family: var(--head, 'Cinzel', serif);
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--muted, #8a7a6a);
+            border: 1px solid rgba(106,24,8,.4);
+            background: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+            .quick-btn:hover {
+                color: var(--text, #f0e8d8);
+                border-color: var(--red, #e8230a);
+                background: rgba(232,35,10,.06);
+            }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-top">Dark Valor</span>
+            <span class="logo-bot">Arena Tournament</span>
+        </a>
+        <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="players.html">Players</a></li>
+    <li><a href="lead.html">Leaderboard</a></li>
+    <li><a href="tournament.html">Tournament</a></li>
+    <li><a href="inventory.html">Inventory</a></li>
+    <li><a href="register.html">Register</a></li>
+    <li><a href="contact.html">Contact</a></li>
+</ul>
+        <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Logout</a>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <div class="hero-badge">Season IV · Grand Tournament</div>
+            <h1 class="hero-title">
+                <span class="t1">Dark Valor</span>
+                <span class="t2">Arena</span>
+            </h1>
+            <p class="hero-sub">Where Legends Are Forged in Blood &amp; Fire</p>
+            <div class="hero-hr"></div>
+            <div class="hero-cta">
+                <a href="schedule.html" class="btn btn-red">View Schedule</a>
+                <a href="players.html" class="btn btn-gold">Meet the Warriors</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" style="background: linear-gradient(to bottom, var(--dark) 0%, rgba(8,3,3,0.6) 30%, rgba(8,3,3,0.6) 70%, var(--dark) 100%), url('img.jpeg') center center / cover no-repeat;">
+        <div class="about-inner" style="grid-template-columns:1fr; max-width:700px;">
+            <div class="about-text">
+                <div class="sec-head" style="text-align:left; margin-bottom:28px;">
+                    <div class="sec-tag">About the Tournament</div>
+                    <h2 class="sec-title">Battle for the <span>Eternal Throne</span></h2>
+                    <div class="sec-line" style="margin:0;"></div>
+                </div>
+                <p>The <strong>Dark Valor: Arena Grand Tournament</strong> is the most prestigious fighting competition in the realm. Warriors from every faction converge to claim glory and the coveted <strong>Eternal Throne</strong>.</p>
+                <p>Each fighter brings a unique style — from the armored might of the <strong>Legion</strong> to the shadow-infused powers of the <strong>Heralds</strong>. Six elite warriors enter. Only one leaves as champion.</p>
+                <p>Season IV features <strong>6 elite warriors</strong> competing across three brutal rounds. Every fight pushes limits. Every victory shapes destiny.</p>
+                <div class="stats">
+                    <div class="stat"><div class="stat-n">6</div><div class="stat-l">Elite Warriors</div></div>
+                    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Battle Rounds</div></div>
+                    <div class="stat"><div class="stat-n">10</div><div class="stat-l">Total Matches</div></div>
+                    <div class="stat"><div class="stat-n">1</div><div class="stat-l">Grand Champion</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-name">Dark Valor: Arena</div>
+        <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+    </footer>
+    <!-- ── CHATBOT WIDGET ──────────────────────────────────── -->
+    <div id="chat-bubble">
+        <div id="chat-window">
+            <div class="chat-header">
+                <div class="chat-header-icon">⚔️</div>
+                <div class="chat-header-info">
+                    <div class="chat-header-title">Arena Oracle</div>
+                    <div class="chat-header-sub">● Online — Ask me anything</div>
+                </div>
+                <button class="chat-close" id="chat-close-btn" title="Close">✕</button>
+            </div>
+            <div id="chat-messages">
+                <div class="msg bot">
+                    Greetings, warrior! ⚔️ I am the <strong>Arena Oracle</strong>. Ask me about fighters, factions, tournaments, or anything about the Dark Valor Arena!
+                </div>
+            </div>
+            <div class="chat-quick-btns">
+                <button class="quick-btn" data-q="Tell me about the factions">Factions</button>
+                <button class="quick-btn" data-q="How do I register as a fighter?">Register</button>
+                <button class="quick-btn" data-q="What are the tournament rules?">Rules</button>
+                <button class="quick-btn" data-q="How do I check the leaderboard?">Leaderboard</button>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Ask the Oracle..." maxlength="300" />
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+        <button id="chat-toggle" title="Chat with Arena Oracle">
+            ⚔️
+            <span id="chat-badge">1</span>
+        </button>
+    </div>
+
+    <script>
+        // Scroll-triggered reveal for about section
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    // Small stagger delay per element
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, entry.target.dataset.delay || 0);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        // Observe about text
+        document.querySelector('.about-text') && observer.observe(document.querySelector('.about-text'));
+
+        // Stagger each stat box
+        document.querySelectorAll('.stat').forEach((el, i) => {
+            el.dataset.delay = i * 120;
+            observer.observe(el);
+        });
+    </script>
+
+
+    <script>
+        // ── Arena text: cursor-following gradient ──
+        const arenaText = document.querySelector('.hero-title .t2');
+        let isHovered = false;
+
+        arenaText.addEventListener('mouseenter', () => {
+            isHovered = true;
+            // Pause the auto animation
+            arenaText.style.animation = 'fadeUp 0.7s 0.75s ease forwards';
+        });
+
+        arenaText.addEventListener('mouseleave', () => {
+            isHovered = false;
+            // Resume auto animation
+            arenaText.style.animation = 'fadeUp 0.7s 0.75s ease forwards, arenaGradient 4s ease-in-out infinite alternate';
+        });
+
+        arenaText.addEventListener('mousemove', (e) => {
+            if (!isHovered) return;
+            const rect = arenaText.getBoundingClientRect();
+            // Map cursor X position across the element width → 0% to 100%
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            arenaText.style.backgroundPosition = `${x}% center`;
+        });
+    </script>
+
+
+    <!-- Chatbot JS -->
+    <script>
+        (function () {
+            const chatToggle = document.getElementById('chat-toggle');
+            const chatWindow = document.getElementById('chat-window');
+            const chatClose = document.getElementById('chat-close-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSend = document.getElementById('chat-send');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatBadge = document.getElementById('chat-badge');
+            const quickBtns = document.querySelectorAll('.quick-btn');
+
+            if (!chatToggle) return;
+
+            let chatOpen = false;
+
+            // ── KNOWLEDGE BASE ────────────────────────────────────────
+            const KB = [
+                {
+                    keys: ['faction', 'legion', 'dynasty', 'herald', 'heralds', 'join', 'which faction'],
+                    reply: '⚔️ Three factions battle for dominance:<br><br><strong style="color:var(--gold)">⚔️ Legion</strong> — Raw strength & iron discipline. For warriors who fight head-on.<br><strong style="color:var(--gold)">🐉 Dynasty</strong> — Speed & cunning. Masters of deception and swift strikes.<br><strong style="color:var(--gold)">👁️ Heralds</strong> — Magic & strategy. They bend the battlefield to their will.'
+                },
+                {
+                    keys: ['register', 'registration', 'sign up', 'signup', 'join', 'enter tournament', 'how to join'],
+                    reply: '📋 To register as a fighter, head to the <a href="contact.html" style="color:var(--gold)">Contact page</a> and fill out the form. Choose your faction, enter your power level, and select <em>"Fighter Registration"</em> as the subject. The Arena Commander will respond within 24 hours. ⚔️'
+                },
+                {
+                    keys: ['rule', 'rules', 'how to play', 'format', 'fight', 'combat', 'match'],
+                    reply: '📜 The tournament runs in <strong>3 brutal rounds</strong>. 6 elite warriors enter — only 1 claims the Eternal Throne. Matchups are seeded by power level. Win 2 out of 3 bouts to advance. No mercy rounds. Check the <a href="tournament.html" style="color:var(--gold)">Tournament page</a> for the full bracket.'
+                },
+                {
+                    keys: ['leaderboard', 'ranking', 'rank', 'top', 'best', 'standing', 'score'],
+                    reply: '🏆 The current rankings of all warriors are displayed on the <a href="lead.html" style="color:var(--gold)">Leaderboard page</a>. Rankings update after every match. Only the strongest survive at the top!'
+                },
+                {
+                    keys: ['schedule', 'when', 'next match', 'upcoming', 'date', 'time', 'fixtures'],
+                    reply: '📅 All upcoming battles are listed on the <a href="schedule.html" style="color:var(--gold)">Schedule page</a>. Tournaments are held weekly. Arrive early — the arena gates open 30 minutes before each bout.'
+                },
+                {
+                    keys: ['player', 'players', 'fighter', 'warriors', 'who', 'characters', 'roster'],
+                    reply: '⚔️ Meet all elite fighters on the <a href="players.html" style="color:var(--gold)">Players page</a>. Each warrior profile includes their faction, power level, win record, and signature fighting style.'
+                },
+                {
+                    keys: ['inventory', 'weapon', 'gear', 'equipment', 'item', 'shop', 'sword', 'armor'],
+                    reply: '🗡️ The arsenal of the arena is displayed in the <a href="inventory.html" style="color:var(--gold)">Inventory page</a>. Browse weapons, armor, and special gear. Each item carries its own power and rarity.'
+                },
+                {
+                    keys: ['contact', 'email', 'reach', 'message', 'phone', 'location', 'address', 'arena', 'where', 'map'],
+                    reply: '📍 Reach the Arena Command at <strong>arena@shadowfight4.com</strong> or call <strong>+1 (666) SHADOW-4</strong>.<br>Open Mon–Fri 10:00–22:00, Weekends 08:00–24:00.<br>Visit the <a href="contact.html" style="color:var(--gold)">Contact page</a> to see our location on the map.'
+                },
+                {
+                    keys: ['tournament', 'bracket', 'season', 'prize', 'champion', 'throne', 'win'],
+                    reply: '👑 Season IV of the Grand Tournament is underway! 6 warriors clash across 3 rounds for the <strong>Eternal Throne</strong>. View the full bracket and results on the <a href="tournament.html" style="color:var(--gold)">Tournament page</a>.'
+                },
+                {
+                    keys: ['power', 'level', 'power level', 'stat', 'strength', 'how strong'],
+                    reply: '💪 Power Level determines your seeding in the tournament bracket. The higher your power, the tougher your early opponents. Enter your power level when registering via the <a href="contact.html" style="color:var(--gold)">Contact page</a>.'
+                },
+                {
+                    keys: ['hello', 'hi', 'hey', 'greetings', 'sup', 'yo', 'hola', 'salute'],
+                    reply: '⚔️ Greetings, warrior! The Arena Oracle stands ready to serve. Ask me about fighters, factions, the tournament, schedule, or how to register. What do you seek?'
+                },
+                {
+                    keys: ['help', 'what can you do', 'options', 'menu', 'commands'],
+                    reply: '🔮 I can answer questions about:<br>• <strong>Factions</strong> — Legion, Dynasty, Heralds<br>• <strong>Registration</strong> — How to join<br>• <strong>Tournament rules</strong> & bracket<br>• <strong>Schedule</strong> — Upcoming matches<br>• <strong>Players</strong> — Fighter profiles<br>• <strong>Leaderboard</strong> — Current rankings<br>• <strong>Inventory</strong> — Weapons & gear<br>• <strong>Contact</strong> — Location & email'
+                },
+                {
+                    keys: ['thanks', 'thank you', 'thx', 'ty', 'appreciate', 'good', 'great', 'nice', 'awesome'],
+                    reply: '🙏 The Oracle is honored to serve, warrior. May your blade stay sharp and your enemies fall swiftly. Is there anything else you wish to know?'
+                },
+                {
+                    keys: ['discord', 'social', 'youtube', 'twitter', 'instagram', 'follow'],
+                    reply: '🎮 Follow the Arena on Discord, YouTube, Twitter/X, and Instagram! Find all the links in the <a href="contact.html" style="color:var(--gold)">Contact page</a> under "Follow the Arena".'
+                }
+            ];
+
+            function getReply(input) {
+                const lower = input.toLowerCase();
+                for (const entry of KB) {
+                    if (entry.keys.some(k => lower.includes(k))) {
+                        return entry.reply;
+                    }
+                }
+                return "🔮 The Oracle's vision is unclear on that matter, warrior. Try asking about <strong>factions</strong>, <strong>registration</strong>, <strong>tournament rules</strong>, <strong>schedule</strong>, <strong>players</strong>, or <strong>contact info</strong>.";
+            }
+
+            // ── TOGGLE ────────────────────────────────────────────────
+            function toggleChat() {
+                chatOpen = !chatOpen;
+                chatWindow.classList.toggle('open', chatOpen);
+                chatBadge.style.display = chatOpen ? 'none' : 'flex';
+                if (chatOpen) chatInput.focus();
+            }
+
+            chatToggle.addEventListener('click', toggleChat);
+            chatClose.addEventListener('click', toggleChat);
+
+            // ── MESSAGES ──────────────────────────────────────────────
+            function appendMsg(text, role) {
+                const div = document.createElement('div');
+                div.className = 'msg ' + role;
+                div.innerHTML = text;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                return div;
+            }
+
+            function sendMessage(text) {
+                if (!text.trim()) return;
+                appendMsg(text, 'user');
+                chatInput.value = '';
+
+                // Simulate typing delay
+                const typingDiv = appendMsg('Oracle is channeling...', 'typing');
+                setTimeout(() => {
+                    typingDiv.remove();
+                    appendMsg(getReply(text), 'bot');
+                }, 600);
+            }
+
+            chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+            chatInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+            });
+            quickBtns.forEach(btn => {
+                btn.addEventListener('click', () => sendMessage(btn.dataset.q));
+            });
+        })();
+    </script>
+</body>
+</html>

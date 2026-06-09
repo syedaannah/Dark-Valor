@@ -1,0 +1,13 @@
+{
+  "name": "darkvalor-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^6.21.0"
+  }
+}

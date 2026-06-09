@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tournament Registration — Dark Valor: Arena</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="theme.js"></script>
+
+    <link rel="stylesheet" href="t.css" />
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar t-navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-top">Dark Valor</span>
+            <span class="logo-bot">Arena Tournament</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+            <li><a href="players.html">Players</a></li>
+            <li><a href="lead.html">Leaderboard</a></li>
+            <li><a href="tournament.html" class="active">Tournament</a></li>
+            <li><a href="inventory.html">Inventory</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Logout</a>
+    </nav>
+
+    <!-- ── Page ── -->
+    <div class="t-page">
+        <div class="t-inner">
+
+            <!-- Header -->
+            <div class="t-header">
+                <div class="sec-tag">Season IV · Open Enrollment</div>
+                <h1 class="sec-title">Tournament <span>Registration</span></h1>
+                <div class="sec-line"></div>
+            </div>
+
+            <!-- Grid -->
+            <div class="t-grid">
+
+                <!-- ── LEFT: Registration Form ── -->
+                <div class="t-form-box">
+                    <span class="t-form-tag">Join the Battle</span>
+                    <h2 class="t-form-title">Register Warrior</h2>
+                    <div class="t-form-line"></div>
+
+                    <!-- Slot counter -->
+                    <div class="t-slot-badge">
+                        <span class="t-slot-label">Slots Available</span>
+                        <span class="t-slot-count" id="slot-count">10 / 10</span>
+                    </div>
+
+                    <!-- Player Name -->
+                    <div class="t-field">
+                        <label for="inp-pname">Player Name <span class="req">*</span></label>
+                        <input type="text" id="inp-pname" placeholder="e.g. Shang…" maxlength="30" autocomplete="off" />
+                    </div>
+
+                    <!-- Game ID -->
+                    <div class="t-field">
+                        <label for="inp-gameid">Game ID <span class="req">*</span></label>
+                        <input type="text" id="inp-gameid" placeholder="e.g. shang1" maxlength="20" autocomplete="off" />
+                    </div>
+
+                    <!-- Team Name -->
+                    <div class="t-field">
+                        <label for="inp-team">Team Name <span class="req">*</span></label>
+                        <input type="text" id="inp-team" placeholder="e.g. Alpha, Fire…" maxlength="25" autocomplete="off" />
+                    </div>
+
+                    <!-- Register button -->
+                    <button class="t-register-btn" id="register-btn" onclick="registerPlayer()">
+                        ⚔ Register
+                    </button>
+
+                    <!-- Feedback -->
+                    <div class="t-msg error" id="t-error"></div>
+                    <div class="t-msg success" id="t-success"></div>
+
+                    <hr class="t-divider" />
+
+                    <button class="t-clear-btn" onclick="clearAll()">✕ Clear All Registrations</button>
+                </div>
+
+                <!-- ── RIGHT: Participants ── -->
+                <div class="t-right">
+
+                    <!-- Stats -->
+                    <div class="t-stats-row">
+                        <div class="t-stat">
+                            <span class="t-stat-val" id="stat-registered">0</span>
+                            <span class="t-stat-lbl">Registered</span>
+                        </div>
+                        <div class="t-stat">
+                            <span class="t-stat-val red" id="stat-remaining">10</span>
+                            <span class="t-stat-lbl">Slots Left</span>
+                        </div>
+                        <div class="t-stat">
+                            <span class="t-stat-val" id="stat-teams">0</span>
+                            <span class="t-stat-lbl">Teams</span>
+                        </div>
+                    </div>
+
+                    <!-- Participants list -->
+                    <div class="t-participants-box">
+                        <div class="t-panel-label">
+                            <span>🏆 Participants</span>
+                            <span class="t-live">Live</span>
+                        </div>
+
+                        <!-- Full banner -->
+                        <div class="t-full-banner" id="full-banner">
+                            ⚠ Tournament Full — Maximum 10 Players Reached
+                        </div>
+
+                        <!-- List -->
+                        <ul class="t-list" id="t-list"></ul>
+
+                        <!-- Empty state -->
+                        <div class="t-empty" id="t-empty">
+                            <span class="t-empty-icon">🏆</span>
+                            <p>No participants yet — register to join</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <div class="footer-name">Dark Valor: Arena</div>
+        <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+    </footer>
+
+    <script>
+        /*
+        ================================================================
+          TOURNAMENT REGISTRATION — JavaScript Logic
+          Features:
+          ✔ Player Name, Game ID, Team Name fields
+          ✔ Registered players appear in Participants List
+          ✔ localStorage persistence (survives page refresh)
+          ✔ Max 10 players limit
+          ✔ Remove individual player
+          ✔ Show Total Registered Players
+          ✔ Duplicate Game ID check
+        ================================================================
+        */
+
+        const STORAGE_KEY = 'dv_tournament_v1';
+        const MAX_PLAYERS = 10;
+
+        /* ── Load participants array from localStorage ── */
+        function loadParticipants() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];      // JSON string → JS array
+            } catch (e) { return []; }
+        }
+
+        /* ── Save participants array to localStorage ── */
+        function saveParticipants(arr) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));  // JS array → JSON string
+        }
+
+        /* ── Register new player ── */
+        function registerPlayer() {
+            const nameEl = document.getElementById('inp-pname');
+            const idEl = document.getElementById('inp-gameid');
+            const teamEl = document.getElementById('inp-team');
+
+            const name = nameEl.value.trim();
+            const gameId = idEl.value.trim();
+            const team = teamEl.value.trim();
+
+            hideMsg('t-error');
+            hideMsg('t-success');
+
+            // ── Validation ──
+            if (!name) { showMsg('t-error', '⚠ Please enter a player name.'); return; }
+            if (name.length < 2) { showMsg('t-error', '⚠ Name must be at least 2 chars.'); return; }
+            if (!gameId) { showMsg('t-error', '⚠ Please enter a Game ID.'); return; }
+            if (!team) { showMsg('t-error', '⚠ Please enter a team name.'); return; }
+
+            const participants = loadParticipants();
+
+            // ── Limit: max 10 players ──
+            if (participants.length >= MAX_PLAYERS) {
+                showMsg('t-error', `⚠ Tournament is full! Maximum ${MAX_PLAYERS} players allowed.`);
+                return;
+            }
+
+            // ── Duplicate Game ID check ──
+            if (participants.some(p => p.gameId.toLowerCase() === gameId.toLowerCase())) {
+                showMsg('t-error', '⚠ That Game ID is already registered.');
+                return;
+            }
+
+            // ── Build participant object ──
+            const participant = {
+                id: Date.now(),                             // unique id
+                name: name,
+                gameId: gameId,
+                team: team,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+
+            // ── Add to array and save ──
+            participants.push(participant);         // array push
+            saveParticipants(participants);         // persist to localStorage as JSON
+
+            // Clear form
+            nameEl.value = ''; idEl.value = ''; teamEl.value = '';
+            nameEl.focus();
+
+            showMsg('t-success', `✦ ${name} registered for Team ${team}!`);
+            renderParticipants(true);   // true = flash new entry
+        }
+
+        /* ── Remove participant by id ── */
+        function removePlayer(id) {
+            let participants = loadParticipants();
+            participants = participants.filter(p => p.id !== id);  // remove from array
+            saveParticipants(participants);
+            renderParticipants(false);
+        }
+
+        /* ── Clear all registrations ── */
+        function clearAll() {
+            if (confirm('Remove ALL registered participants?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderParticipants(false);
+            }
+        }
+
+        /* ── Render participants list (DOM update) ── */
+        function renderParticipants(flashLast) {
+            const participants = loadParticipants();    // load from JSON storage
+            const list = document.getElementById('t-list');
+            const empty = document.getElementById('t-empty');
+            const fullBanner = document.getElementById('full-banner');
+            const registerBtn = document.getElementById('register-btn');
+            const slotCount = document.getElementById('slot-count');
+
+            const count = participants.length;
+            const remaining = MAX_PLAYERS - count;
+            const isFull = count >= MAX_PLAYERS;
+
+            // ── Update stats ──
+            document.getElementById('stat-registered').textContent = count;
+            document.getElementById('stat-remaining').textContent = remaining;
+
+            // Count unique teams
+            const uniqueTeams = new Set(participants.map(p => p.team.toLowerCase()));
+            document.getElementById('stat-teams').textContent = uniqueTeams.size;
+
+            // Slot badge
+            slotCount.textContent = `${remaining} / ${MAX_PLAYERS}`;
+            slotCount.classList.toggle('full', isFull);
+
+            // Full banner + disable form
+            fullBanner.style.display = isFull ? 'block' : 'none';
+            registerBtn.disabled = isFull;
+            ['inp-pname', 'inp-gameid', 'inp-team'].forEach(id => {
+                document.getElementById(id).disabled = isFull;
+            });
+
+            // Empty state
+            empty.style.display = count === 0 ? 'block' : 'none';
+
+            // ── Clear and rebuild list (DOM modification) ──
+            list.innerHTML = '';
+
+            participants.forEach((p, index) => {
+                const pos = index + 1;
+                const isNew = flashLast && index === participants.length - 1;
+
+                // Badge class for top 3
+                let numClass = '';
+                if (pos === 1) numClass = 'n1';
+                else if (pos === 2) numClass = 'n2';
+                else if (pos === 3) numClass = 'n3';
+
+                // Create list item element
+                const li = document.createElement('li');
+                li.className = 't-list-item' + (isNew ? ' new-entry' : '');
+                li.style.animationDelay = `${index * 50}ms`;
+
+                // Inject content
+                li.innerHTML = `
+                        <span class="t-num ${numClass}">${pos}</span>
+                        <div class="t-player-info">
+                            <span class="t-player-name">${escapeHTML(p.name)}</span>
+                            <span class="t-player-meta">
+                                ID: <span>${escapeHTML(p.gameId)}</span>
+                                &nbsp;·&nbsp; Team: <span>${escapeHTML(p.team)}</span>
+                            </span>
+                        </div>
+                        <button class="t-remove-btn" onclick="removePlayer(${p.id})" title="Remove">✕</button>
+                    `;
+
+                list.appendChild(li);   // append to DOM
+            });
+        }
+
+        /* ── Helpers ── */
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function showMsg(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3500);
+        }
+
+        function hideMsg(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        /* ── Enter key support ── */
+        ['inp-pname', 'inp-gameid', 'inp-team'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', e => {
+                if (e.key === 'Enter') registerPlayer();
+            });
+        });
+
+        /* ── Initial render on page load ── */
+        renderParticipants(false);
+    </script>
+</body>
+</html>

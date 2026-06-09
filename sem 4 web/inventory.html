@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Inventory — Dark Valor: Arena</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="theme.js"></script>
+
+    <link rel="stylesheet" href="t.css" />
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar t-navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-top">Dark Valor</span>
+            <span class="logo-bot">Arena Tournament</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+            <li><a href="players.html">Players</a></li>
+            <li><a href="lead.html">Leaderboard</a></li>
+            <li><a href="tournament.html">Tournament</a></li>
+            <li><a href="inventory.html" class="active">Inventory</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Logout</a>
+    </nav>
+
+    <!-- ── Page ── -->
+    <div class="inv-page">
+        <div class="inv-inner">
+
+            <!-- Header -->
+            <div class="inv-header">
+                <div class="sec-tag">Season IV · Item Registry</div>
+                <h1 class="sec-title inv-header">Game <span>Inventory</span></h1>
+                <div class="sec-line"></div>
+            </div>
+
+            <div class="inv-grid">
+
+                <!-- ── LEFT: Add Item Form ── -->
+                <div class="inv-form-box">
+                    <span class="inv-form-tag">Item Registry</span>
+                    <h2 class="inv-form-title">Add New Item</h2>
+                    <div class="inv-form-line"></div>
+
+                    <!-- Item count badge -->
+                    <div class="inv-count-badge">
+                        <span class="inv-count-label">Items in Inventory</span>
+                        <span class="inv-count-val" id="inv-total">0</span>
+                    </div>
+
+                    <!-- Item Name -->
+                    <div class="inv-field">
+                        <label for="itemName">Item Name <span class="req">*</span></label>
+                        <input type="text" id="itemName" placeholder="e.g. Dragon Sword, Iron Shield…" maxlength="40" autocomplete="off" />
+                    </div>
+
+                    <!-- Item Type -->
+                    <div class="inv-field">
+                        <label for="itemType">Item Type <span class="req">*</span></label>
+                        <select id="itemType">
+                            <option value="Weapon">⚔️ Weapon</option>
+                            <option value="Armor">🛡️ Armor</option>
+                            <option value="Potion">🧪 Potion</option>
+                            <option value="Magic Item">✨ Magic Item</option>
+                        </select>
+                    </div>
+
+                    <!-- Quantity + Rarity row -->
+                    <div class="inv-qty-row">
+                        <div class="inv-field">
+                            <label for="itemQty">Quantity</label>
+                            <input type="number" id="itemQty" placeholder="1" min="1" max="999" value="1" />
+                        </div>
+                        <div class="inv-field">
+                            <label for="itemRarity">Rarity</label>
+                            <select id="itemRarity">
+                                <option value="Common">Common</option>
+                                <option value="Rare">Rare</option>
+                                <option value="Epic">Epic</option>
+                                <option value="Legendary">Legendary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Add button -->
+                    <button class="inv-add-btn" onclick="addItem()">＋ Add to Inventory</button>
+
+                    <!-- Messages -->
+                    <div class="inv-msg error" id="inv-error"></div>
+                    <div class="inv-msg success" id="inv-success"></div>
+
+                    <hr class="inv-divider" />
+                    <button class="inv-clear-btn" onclick="clearInventory()">✕ Clear Inventory</button>
+                </div>
+
+                <!-- ── RIGHT: Inventory View ── -->
+                <div class="inv-right">
+
+                    <!-- Stats: item counts per type -->
+                    <div class="inv-stats-row">
+                        <div class="inv-stat s-weapon">
+                            <span class="inv-stat-val" id="stat-weapon">0</span>
+                            <span class="inv-stat-lbl">⚔️ Weapons</span>
+                        </div>
+                        <div class="inv-stat s-armor">
+                            <span class="inv-stat-val" id="stat-armor">0</span>
+                            <span class="inv-stat-lbl">🛡️ Armor</span>
+                        </div>
+                        <div class="inv-stat s-potion">
+                            <span class="inv-stat-val" id="stat-potion">0</span>
+                            <span class="inv-stat-lbl">🧪 Potions</span>
+                        </div>
+                        <div class="inv-stat s-magic">
+                            <span class="inv-stat-val" id="stat-magic">0</span>
+                            <span class="inv-stat-lbl">✨ Magic</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="inv-filter-bar">
+                        <button class="inv-filter-btn active" onclick="setFilter('All', this)">All</button>
+                        <button class="inv-filter-btn" onclick="setFilter('Weapon', this)">⚔️ Weapons</button>
+                        <button class="inv-filter-btn" onclick="setFilter('Armor', this)">🛡️ Armor</button>
+                        <button class="inv-filter-btn" onclick="setFilter('Potion', this)">🧪 Potions</button>
+                        <button class="inv-filter-btn" onclick="setFilter('Magic Item', this)">✨ Magic</button>
+                    </div>
+
+                    <!-- Inventory box -->
+                    <div class="inv-box">
+                        <div class="inv-box-label">
+                            <span>🎒 Saved Inventory</span>
+                            <span class="t-live">Live</span>
+                        </div>
+
+                        <!-- Cards grid -->
+                        <div class="inv-items-grid" id="inventoryList"></div>
+
+                        <!-- Empty state -->
+                        <div class="inv-empty" id="inv-empty">
+                            <span class="inv-empty-icon">🎒</span>
+                            <p>No items yet — add your first item</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <div class="footer-name">Dark Valor: Arena</div>
+        <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+    </footer>
+
+    <script>
+        /*
+        ================================================================
+          GAME INVENTORY MANAGEMENT SYSTEM
+          Data stored in: localStorage key "inventory" as JSON
+          JSON structure:
+          [
+            {
+              "id": 1748291234,
+              "name": "Dragon Sword",
+              "type": "Weapon",
+              "qty": 1,
+              "rarity": "Legendary",
+              "date": "04/03/2026"
+            },
+            ...
+          ]
+        ================================================================
+        */
+
+        const STORAGE_KEY = 'inventory';   // matches the task requirement key name
+
+        // ── Active filter ──
+        let activeFilter = 'All';
+
+        // ── Load inventory array from localStorage (JSON → array) ──
+        let inventory = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+        // ── Render on page load ──
+        displayItems();
+
+        /* ────────────────────────────────
+           ADD ITEM
+        ──────────────────────────────── */
+        function addItem() {
+            const nameEl = document.getElementById('itemName');
+            const typeEl = document.getElementById('itemType');
+            const qtyEl = document.getElementById('itemQty');
+            const rarityEl = document.getElementById('itemRarity');
+
+            const name = nameEl.value.trim();
+            const type = typeEl.value;
+            const qty = parseInt(qtyEl.value, 10) || 1;
+            const rarity = rarityEl.value;
+
+            hideMsg('inv-error');
+            hideMsg('inv-success');
+
+            // Validation
+            if (!name) {
+                showMsg('inv-error', '⚠ Please enter an item name.');
+                return;
+            }
+            if (name.length < 2) {
+                showMsg('inv-error', '⚠ Name must be at least 2 characters.');
+                return;
+            }
+
+            // Build item JSON object
+            const item = {
+                id: Date.now(),          // unique id for deletion
+                name: name,
+                type: type,
+                qty: qty,
+                rarity: rarity,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+
+            inventory.push(item);                                          // add to array
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory)); // save as JSON string
+
+            // Clear inputs
+            nameEl.value = '';
+            qtyEl.value = '1';
+            nameEl.focus();
+
+            showMsg('inv-success', `✦ "${name}" added to inventory!`);
+            displayItems();
+        }
+
+        /* ────────────────────────────────
+           DELETE ITEM by id
+        ──────────────────────────────── */
+        function deleteItem(id) {
+            inventory = inventory.filter(item => item.id !== id);          // remove from array
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory));  // update JSON in storage
+            displayItems();
+        }
+
+        /* ────────────────────────────────
+           CLEAR ENTIRE INVENTORY
+        ──────────────────────────────── */
+        function clearInventory() {
+            if (!confirm('Clear all inventory items?')) return;
+            localStorage.removeItem(STORAGE_KEY);   // wipe from localStorage
+            inventory = [];                          // reset array
+            displayItems();
+        }
+
+        /* ────────────────────────────────
+           FILTER
+        ──────────────────────────────── */
+        function setFilter(filter, btn) {
+            activeFilter = filter;
+            // Update active button style
+            document.querySelectorAll('.inv-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayItems();
+        }
+
+        /* ────────────────────────────────
+           DISPLAY ITEMS (DOM update)
+        ──────────────────────────────── */
+        function displayItems() {
+            const container = document.getElementById('inventoryList');
+            const empty = document.getElementById('inv-empty');
+
+            // Filter array based on active filter
+            const filtered = activeFilter === 'All'
+                ? inventory
+                : inventory.filter(item => item.type === activeFilter);
+
+            // Update total count badge
+            document.getElementById('inv-total').textContent = inventory.length;
+
+            // Update per-type stats
+            document.getElementById('stat-weapon').textContent = inventory.filter(i => i.type === 'Weapon').length;
+            document.getElementById('stat-armor').textContent = inventory.filter(i => i.type === 'Armor').length;
+            document.getElementById('stat-potion').textContent = inventory.filter(i => i.type === 'Potion').length;
+            document.getElementById('stat-magic').textContent = inventory.filter(i => i.type === 'Magic Item').length;
+
+            // Empty state
+            empty.style.display = filtered.length === 0 ? 'block' : 'none';
+
+            // Clear existing cards (DOM modification)
+            container.innerHTML = '';
+
+            // Type → icon + CSS class map
+            const typeMap = {
+                'Weapon': { icon: '⚔️', cls: 'type-weapon' },
+                'Armor': { icon: '🛡️', cls: 'type-armor' },
+                'Potion': { icon: '🧪', cls: 'type-potion' },
+                'Magic Item': { icon: '✨', cls: 'type-magic' }
+            };
+
+            // Rarity colour map
+            const rarityColor = {
+                'Common': '#8a7a6a',
+                'Rare': '#4ca8ff',
+                'Epic': '#c084fc',
+                'Legendary': '#c9a227'
+            };
+
+            // Build and inject a card for each item
+            filtered.forEach((item, index) => {
+                const meta = typeMap[item.type] || { icon: '📦', cls: '' };
+
+                const div = document.createElement('div');
+                div.className = `inv-item-card ${meta.cls}`;
+                div.style.animationDelay = `${index * 45}ms`;
+
+                // Rarity styled inline
+                const rarityStyle = `color:${rarityColor[item.rarity] || '#8a7a6a'};font-size:11px;letter-spacing:2px;`;
+
+                div.innerHTML = `
+                        <span class="inv-type-icon">${meta.icon}</span>
+                        <span class="inv-item-name">${escapeHTML(item.name)}</span>
+                        <span class="inv-item-type ${meta.cls}">${item.type}</span>
+                        <span class="inv-item-qty">Qty: ${item.qty} &nbsp;·&nbsp; <span style="${rarityStyle}">${item.rarity}</span></span>
+                        <button class="inv-del-btn" onclick="deleteItem(${item.id})">✕ Delete</button>
+                    `;
+
+                container.appendChild(div);  // append card to DOM
+            });
+        }
+
+        /* ── Helpers ── */
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function showMsg(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3200);
+        }
+
+        function hideMsg(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Enter key support
+        document.getElementById('itemName').addEventListener('keydown', e => {
+            if (e.key === 'Enter') addItem();
+        });
+    </script>
+</body>
+</html>

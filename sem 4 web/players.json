@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Shang",
+    "game": "Dark Valor: Arena",
+    "rank": "S+",
+    "score": 9840,
+    "faction": "Legion",
+    "role": "Iron Knight · Blade Commander",
+    "wins": 38,
+    "image": "shang.png"
+  },
+  {
+    "name": "Azuma",
+    "game": "Dark Valor: Arena",
+    "rank": "S",
+    "score": 9210,
+    "faction": "Heralds",
+    "role": "Shadow Stalker · Spear Phantom",
+    "wins": 34,
+    "image": "azuma.png"
+  },
+  {
+    "name": "Ironclad",
+    "game": "Dark Valor: Arena",
+    "rank": "S",
+    "score": 8750,
+    "faction": "Legion",
+    "role": "Fortress Knight · Unyielding Wall",
+    "wins": 31,
+    "image": "ironclad.png"
+  },
+  {
+    "name": "King",
+    "game": "Dark Valor: Arena",
+    "rank": "A+",
+    "score": 8420,
+    "faction": "Legion",
+    "role": "Dark Sovereign · Spiked Warlord",
+    "wins": 28,
+    "image": "king.png"
+  },
+  {
+    "name": "Kate",
+    "game": "Dark Valor: Arena",
+    "rank": "A+",
+    "score": 7980,
+    "faction": "Legion",
+    "role": "Silver Knight · Sword Sovereign",
+    "wins": 25,
+    "image": "kate.png"
+  },
+  {
+    "name": "Serjan",
+    "game": "Dark Valor: Arena",
+    "rank": "A",
+    "score": 7650,
+    "faction": "Heralds",
+    "role": "Brawler Elite · Gauntlet Crusher",
+    "wins": 22,
+    "image": "serjan.png"
+  },
+  {
+    "name": "Xiang",
+    "game": "Dark Valor: Arena",
+    "rank": "A",
+    "score": 7310,
+    "faction": "Legion",
+    "role": "War Brute · Iron Fist Ravager",
+    "wins": 19,
+    "image": "xiang.png"
+  },
+  {
+    "name": "Kibo",
+    "game": "Dark Valor: Arena",
+    "rank": "B+",
+    "score": 6980,
+    "faction": "Heralds",
+    "role": "Blade Dancer · Shadow Duelist",
+    "wins": 16,
+    "image": "kibo.png"
+  },
+  {
+    "name": "Fireguard",
+    "game": "Dark Valor: Arena",
+    "rank": "B+",
+    "score": 6700,
+    "faction": "Infernal",
+    "role": "Mech Juggernaut · Ember Warlord",
+    "wins": 14,
+    "image": "fireguard.png"
+  }
+]

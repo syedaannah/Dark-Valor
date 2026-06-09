@@ -1,0 +1,602 @@
+﻿/* ============================================================
+   lstyle.css — Dark Valor: Arena · Leaderboard Styles
+   Depends on style.css being loaded first (for base variables)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&display=swap');
+
+/* ── Keyframe Animations ── */
+@keyframes lb-fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lb-slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lb-rowIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes lb-pulseGold {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(201,162,39,0.35), inset 0 0 20px rgba(201,162,39,0.04);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(201,162,39,0.7), inset 0 0 30px rgba(201,162,39,0.08);
+    }
+}
+
+@keyframes lb-shimmer {
+    0% {
+        background-position: -200% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+@keyframes lb-expandLine {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 60px;
+    }
+}
+
+/* ── Navbar ── */
+.lb-navbar {
+    animation: lb-slideDown 0.6s ease both;
+}
+
+/* ── Page Wrapper ── */
+.lb-page {
+    padding: 100px 6% 80px;
+    max-width: 100%;
+    min-height: 100vh;
+}
+
+    .lb-page > *:not(style) {
+        max-width: 1140px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+/* ── Page Header ── */
+.lb-header {
+    text-align: center;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: lb-fadeUp 0.7s 0.15s ease forwards;
+}
+
+    .lb-header .sec-tag {
+        font-family: 'Cinzel', serif;
+        font-size: 11px;
+        letter-spacing: 5px;
+        color: #e8230a;
+        text-transform: uppercase;
+    }
+
+    .lb-header .sec-title {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        color: #f0e8d8;
+        margin: 8px 0 14px;
+    }
+
+        .lb-header .sec-title span {
+            color: #e8230a;
+        }
+
+    .lb-header .sec-line {
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #e8230a, #c9a227);
+        margin: 0 auto;
+        animation: lb-expandLine 0.8s 0.6s ease forwards;
+    }
+
+/* ── Two-Column Grid ── */
+.lb-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ─────────────────────────────
+   STATS BAR
+───────────────────────────── */
+.lb-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: lb-fadeUp 0.7s 0.4s ease forwards;
+}
+
+.lb-stat-card {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    padding: 18px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+    .lb-stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #e8230a, #c9a227);
+    }
+
+.lb-stat-val {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.7rem;
+    color: #c9a227;
+    line-height: 1;
+    display: block;
+}
+
+.lb-stat-lbl {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+}
+
+/* ─────────────────────────────
+   TABLE PANEL
+───────────────────────────── */
+.lb-table-panel {
+    opacity: 0;
+    animation: lb-fadeUp 0.7s 0.5s ease forwards;
+}
+
+.lb-table-wrap {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    border-top: 3px solid #c9a227;
+    overflow: hidden;
+}
+
+/* Table header bar label */
+.lb-table-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid rgba(106,24,8,0.4);
+    background: rgba(201,162,39,0.05);
+}
+
+    .lb-table-label span {
+        font-family: 'Cinzel', serif;
+        font-size: 10px;
+        letter-spacing: 4px;
+        color: #c9a227;
+        text-transform: uppercase;
+    }
+
+.lb-live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+}
+
+    .lb-live-dot::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4cff4c;
+        box-shadow: 0 0 6px #4cff4c;
+        animation: lb-pulseGold 1.8s ease-in-out infinite;
+    }
+
+/* The actual table */
+.lb-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .lb-table thead tr {
+        background: rgba(106,24,8,0.15);
+        border-bottom: 1px solid rgba(106,24,8,0.5);
+    }
+
+    .lb-table th {
+        font-family: 'Cinzel', serif;
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #8a7a6a;
+        padding: 13px 18px;
+        text-align: left;
+    }
+
+        .lb-table th.th-score,
+        .lb-table th.th-action {
+            text-align: right;
+        }
+
+    .lb-table td {
+        padding: 13px 18px;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 15px;
+        color: #f0e8d8;
+        border-bottom: 1px solid rgba(106,24,8,0.2);
+        vertical-align: middle;
+    }
+
+    .lb-table tbody tr {
+        transition: background 0.2s;
+        animation: lb-rowIn 0.4s ease both;
+    }
+
+        .lb-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .lb-table tbody tr:hover {
+            background: rgba(232,35,10,0.04);
+        }
+
+/* ── TOP PLAYER ROW (rank 1) ── */
+.lb-row-top {
+    background: rgba(201,162,39,0.06) !important;
+    animation: lb-pulseGold 2.6s ease-in-out infinite, lb-rowIn 0.4s ease both !important;
+    border-left: 3px solid #c9a227;
+}
+
+    .lb-row-top td {
+        color: #f5e9c0 !important;
+    }
+
+/* ── Rank Badge ── */
+.lb-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid rgba(106,24,8,0.4);
+    color: #8a7a6a;
+    background: rgba(255,255,255,0.02);
+}
+
+    .lb-rank.gold {
+        border-color: #c9a227;
+        color: #c9a227;
+        background: rgba(201,162,39,0.1);
+        font-size: 14px;
+    }
+
+    .lb-rank.silver {
+        border-color: #c0c0c0;
+        color: #c0c0c0;
+        background: rgba(192,192,192,0.07);
+    }
+
+    .lb-rank.bronze {
+        border-color: #cd7f32;
+        color: #cd7f32;
+        background: rgba(205,127,50,0.07);
+    }
+
+/* ── Player Name Cell ── */
+.lb-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lb-crown {
+    font-size: 15px;
+}
+
+.lb-row-top .lb-name {
+    color: #c9a227;
+}
+
+/* ── Score Cell ── */
+.lb-score {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: #e8230a;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.lb-row-top .lb-score {
+    color: #c9a227;
+}
+
+/* ── Date Cell ── */
+.lb-date {
+    font-size: 12px;
+    color: #8a7a6a;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+/* ── Delete Button ── */
+.lb-del {
+    background: none;
+    border: 1px solid rgba(232,35,10,0.2);
+    color: rgba(232,35,10,0.35);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    display: block;
+    margin-left: auto;
+}
+
+    .lb-del:hover {
+        color: #fff;
+        border-color: #e8230a;
+        background: rgba(232,35,10,0.15);
+    }
+
+/* ── Empty State ── */
+.lb-empty {
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.lb-empty-icon {
+    font-size: 2.8rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 14px;
+}
+
+.lb-empty p {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+}
+
+/* ─────────────────────────────
+   ENTRY FORM PANEL
+───────────────────────────── */
+.lb-form-panel {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    border-top: 3px solid #e8230a;
+    padding: 32px 28px;
+    position: sticky;
+    top: 80px;
+    opacity: 0;
+    animation: lb-fadeUp 0.7s 0.65s ease forwards;
+}
+
+.lb-form-head {
+    margin-bottom: 24px;
+}
+
+.lb-form-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: #e8230a;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.lb-form-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.35rem;
+    color: #f0e8d8;
+    margin: 0 0 16px;
+}
+
+.lb-form-line {
+    width: 44px;
+    height: 2px;
+    background: linear-gradient(90deg, #e8230a, #c9a227);
+}
+
+/* Field */
+.lb-field {
+    margin-bottom: 20px;
+}
+
+    .lb-field label {
+        display: block;
+        font-family: 'Cinzel', serif;
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #8a7a6a;
+        margin-bottom: 8px;
+    }
+
+        .lb-field label .req {
+            color: #e8230a;
+        }
+
+    .lb-field input {
+        width: 100%;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(106,24,8,0.45);
+        color: #f0e8d8;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 15px;
+        padding: 11px 14px;
+        outline: none;
+        transition: border-color 0.25s, box-shadow 0.25s;
+        -webkit-appearance: none;
+    }
+
+        .lb-field input:focus {
+            border-color: #e8230a;
+            box-shadow: 0 0 12px rgba(232,35,10,0.12);
+        }
+
+        .lb-field input::placeholder {
+            color: rgba(138,122,106,0.3);
+        }
+
+/* Submit button */
+.lb-submit {
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: #e8230a;
+    color: #fff;
+    border: 1px solid #e8230a;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.2s;
+    margin-top: 4px;
+}
+
+    .lb-submit:hover {
+        box-shadow: 0 0 24px rgba(232,35,10,0.55);
+        transform: translateY(-2px);
+    }
+
+    .lb-submit:active {
+        transform: translateY(0);
+    }
+
+/* Clear button */
+.lb-clear {
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: transparent;
+    color: #8a7a6a;
+    border: 1px solid rgba(106,24,8,0.35);
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: color 0.25s, border-color 0.25s;
+}
+
+    .lb-clear:hover {
+        color: #e8230a;
+        border-color: #e8230a;
+    }
+
+/* Messages */
+.lb-error {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(232,35,10,0.07);
+    border: 1px solid rgba(232,35,10,0.4);
+    color: #ff6b6b;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.lb-success {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(76,255,76,0.04);
+    border: 1px solid rgba(76,255,76,0.3);
+    color: #4cff4c;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+/* ── Divider ── */
+.lb-divider {
+    border: none;
+    border-top: 1px solid rgba(106,24,8,0.3);
+    margin: 22px 0;
+}
+
+/* ─────────────────────────────
+   RESPONSIVE
+───────────────────────────── */
+@media (max-width: 960px) {
+    .lb-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lb-form-panel {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .lb-stats-bar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+        .lb-stats-bar .lb-stat-card:last-child {
+            grid-column: 1 / -1;
+        }
+
+    .lb-table th.th-date,
+    .lb-table td.lb-date {
+        display: none;
+    }
+}

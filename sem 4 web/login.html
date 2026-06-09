@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Dark Valor: Arena</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="theme.js"></script>
+
+    <link rel="stylesheet" href="style2.css" />
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-top">Dark Valor</span>
+            <span class="logo-bot">Arena Tournament</span>
+        </div>
+    </nav>
+
+    <div class="auth-page">
+        <div class="auth-box">
+
+            <!-- Animated character -->
+            <div class="char-peek">
+                <div class="char-body" id="charBody">🥷</div>
+                <div class="char-label" id="charLabel">Watching your password...</div>
+            </div>
+
+            <div class="auth-title">Enter the <span>Arena</span></div>
+            <div class="auth-sub">Login to your warrior account</div>
+
+            <form id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="text" id="loginEmail" placeholder="warrior@arena.com" />
+                    <div class="err-msg" id="emailErr">⚠ Email is required</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="loginPw" placeholder="Enter your password" />
+                        <button type="button" class="pw-toggle" id="pwToggle">🙈</button>
+                    </div>
+                    <div class="err-msg" id="pwErr">⚠ Password is required</div>
+                </div>
+
+                <button type="submit" class="btn-submit-auth">⚔️ Enter the Arena</button>
+
+                <div class="success-msg" id="successMsg">
+                    ✦ Welcome back, Warrior. Entering the Arena... ✦
+                </div>
+            </form>
+
+            <div class="auth-switch">New warrior? <a href="signup.html">Create an account</a></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-name">Dark Valor: Arena</div>
+        <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const pwInput = document.getElementById('loginPw');
+        const toggle = document.getElementById('pwToggle');
+        const charBody = document.getElementById('charBody');
+        const charLabel = document.getElementById('charLabel');
+
+        let pwVisible = false;
+
+        // ── Password toggle + character animation ──
+        toggle.addEventListener('click', () => {
+            pwVisible = !pwVisible;
+            if (pwVisible) {
+                // password visible — ninja looks AWAY (embarrassed)
+                pwInput.type = 'text';
+                toggle.textContent = '👁️';
+                charBody.classList.add('hidden');
+                charLabel.classList.remove('hidden');
+                charLabel.textContent = 'Looking away...';
+            } else {
+                // password hidden — ninja peeks and WATCHES
+                pwInput.type = 'password';
+                toggle.textContent = '🙈';
+                charBody.classList.remove('hidden');
+                charLabel.classList.remove('hidden');
+                charLabel.textContent = 'Watching your password...';
+            }
+        });
+
+        // ── Helpers ──
+        function showErr(el) { el.classList.add('show'); }
+        function hideErr(el) { el.classList.remove('show'); }
+
+        // ── Submit ──
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let valid = true;
+
+            const emailEl = document.getElementById('loginEmail');
+            const emailErr = document.getElementById('emailErr');
+            if (!emailEl.value.trim()) {
+                emailEl.classList.add('invalid'); showErr(emailErr); valid = false;
+            } else {
+                emailEl.classList.remove('invalid'); hideErr(emailErr);
+            }
+
+            const pwErr = document.getElementById('pwErr');
+            if (!pwInput.value.trim()) {
+                pwInput.classList.add('invalid'); showErr(pwErr); valid = false;
+            } else {
+                pwInput.classList.remove('invalid'); hideErr(pwErr);
+            }
+
+            if (valid) {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw = pwInput.value.trim();
+    const msg = document.getElementById('successMsg');
+
+    // Admin credentials
+    if (email === "admin@arena.com" && pw === "admin123") {
+        msg.textContent = "✦ Welcome, Admin. Entering Control Panel... ✦";
+        msg.style.display = 'block';
+        setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
+    } else {
+        msg.textContent = "✦ Welcome back, Warrior. Entering the Arena... ✦";
+        msg.style.display = 'block';
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+    }
+}
+        });
+    </script>
+</body>
+</html>

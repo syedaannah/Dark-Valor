@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Register — Dark Valor: Arena</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="theme.js"></script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="logo">
+    <span class="logo-top">Dark Valor</span>
+    <span class="logo-bot">Arena Tournament</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="players.html">Players</a></li>
+    <li><a href="lead.html">Leaderboard</a></li>
+    <li><a href="register.html" class="active">Register</a></li>
+    <li><a href="admin.html">Admin</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;">Logout</a>
+</nav>
+
+<div class="page">
+  <div class="sec-head">
+    <div class="sec-tag">Season IV</div>
+    <h2 class="sec-title">Tournament <span>Registration</span></h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div style="max-width:600px;margin:0 auto;">
+    <div class="form-box">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name <span class="req">*</span></label>
+          <input id="r-name" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label>Email <span class="req">*</span></label>
+          <input id="r-email" type="email" placeholder="you@email.com"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fighter</label>
+          <select id="r-fighter">
+            <option>Shang</option><option>Azuma</option><option>Ironclad</option>
+            <option>King</option><option>Kate</option><option>Serjan</option>
+            <option>Xiang</option><option>Kibo</option><option>Fireguard</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Faction</label>
+          <select id="r-faction">
+            <option>Legion</option><option>Heralds</option><option>Infernal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tournament <span class="req">*</span></label>
+          <select id="r-tournament">
+            <option>Season IV — Open Tournament</option>
+            <option>Grand Championship</option>
+            <option>Faction War — Legion vs Heralds</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Power Level</label>
+          <input id="r-power" type="number" min="1" max="9999" placeholder="1–9999"/>
+        </div>
+      </div>
+
+      <!-- PAYMENT -->
+      <div style="border:1px solid var(--border);border-top:2px solid var(--gold);padding:20px;margin-bottom:18px;">
+        <div class="sec-tag" style="margin-bottom:12px;">Registration Fee — $10</div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <select id="r-payment">
+            <option value="USDT">USDT Wallet</option>
+            <option value="Bitcoin">Bitcoin Wallet</option>
+            <option value="Ethereum">Ethereum Wallet</option>
+            <option value="JazzCash">JazzCash (Mock)</option>
+            <option value="EasyPaisa">EasyPaisa (Mock)</option>
+            <option value="Stripe">Stripe Sandbox</option>
+          </select>
+        </div>
+        <div id="payment-detail" style="background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.3);padding:14px;font-size:13px;color:var(--muted);">
+          <!-- filled by JS -->
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:1px;">⚠️ DEMO ONLY — No real transaction processed</p>
+      </div>
+
+      <div class="form-foot">
+        <span class="form-note">* Required fields</span>
+        <button class="btn-submit" id="r-submit">Register &amp; Pay</button>
+      </div>
+      <div class="form-ok" id="r-ok"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-name">Dark Valor: Arena</div>
+  <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+</footer>
+
+<script>
+const paymentInfo = {
+  USDT:      "USDT Address: <strong>TXvZ3...9kQmN</strong> (TRC-20)",
+  Bitcoin:   "BTC Address: <strong>1A1zP1...3GnQA</strong>",
+  Ethereum:  "ETH Address: <strong>0x742d...A8c2f</strong>",
+  JazzCash:  "JazzCash Number: <strong>0300-1234567</strong>",
+  EasyPaisa: "EasyPaisa Number: <strong>0311-7654321</strong>",
+  Stripe:    "Card: <strong>4242 4242 4242 4242</strong> · Exp: 12/26 · CVV: 123"
+};
+
+const sel = document.getElementById("r-payment");
+const detail = document.getElementById("payment-detail");
+detail.innerHTML = paymentInfo[sel.value];
+sel.addEventListener("change", () => detail.innerHTML = paymentInfo[sel.value]);
+
+document.getElementById("r-submit").addEventListener("click", async () => {
+  const body = {
+    name: document.getElementById("r-name").value.trim(),
+    email: document.getElementById("r-email").value.trim(),
+    fighter: document.getElementById("r-fighter").value,
+    faction: document.getElementById("r-faction").value,
+    tournament: document.getElementById("r-tournament").value,
+    powerLevel: document.getElementById("r-power").value,
+    paymentMethod: sel.value
+  };
+  if (!body.name || !body.email) return alert("Name and email are required.");
+  try {
+    const res = await fetch("http://localhost:3000/registrations", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      const ok = document.getElementById("r-ok");
+      ok.style.display = "block";
+      ok.innerHTML = `✅ Registered! ID: ${data._id} · Payment: ${data.paymentMethod} · Status: ${data.paymentStatus}`;
+    } else alert(data.error);
+  } catch { alert("Server offline. Start backend first."); }
+});
+</script>
+</body>
+</html>

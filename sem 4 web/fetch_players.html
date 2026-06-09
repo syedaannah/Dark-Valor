@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Players — Dark Valor: Arena</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="theme.js"></script>
+
+    <style>
+        /* ── Fetch error box ── */
+        .fetch-error {
+            text-align: center;
+            padding: 60px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #ff6b6b;
+            border: 1px solid rgba(232,35,10,0.3);
+            background: rgba(232,35,10,0.05);
+            margin: 40px auto;
+            max-width: 500px;
+        }
+
+            .fetch-error small {
+                display: block;
+                margin-top: 10px;
+                font-size: 11px;
+                color: #8a7a6a;
+                letter-spacing: 3px;
+            }
+
+        /* ── Loading state ── */
+        .fetch-loading {
+            text-align: center;
+            padding: 80px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 5px;
+            color: #8a7a6a;
+            text-transform: uppercase;
+        }
+
+        /* ── Player count badge ── */
+        .players-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .players-meta-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: #8a7a6a;
+            text-transform: uppercase;
+        }
+
+        .players-meta-count {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #c9a227;
+            border: 1px solid rgba(201,162,39,0.3);
+            padding: 6px 14px;
+            text-transform: uppercase;
+        }
+
+        /* ── Card fade-in ── */
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            opacity: 0;
+            animation: cardIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-top">Dark Valor</span>
+            <span class="logo-bot">Arena Tournament</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+            <li><a href="fetch_players.html" class="active">Players</a></li>
+            <li><a href="lead.html">Leaderboard</a></li>
+            <li><a href="tournament.html">Tournament</a></li>
+            <li><a href="inventory.html">Inventory</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="login.html" class="btn btn-red" style="font-size:11px;padding:8px 18px;letter-spacing:2px;">Logout</a>
+    </nav>
+
+    <!-- ── Main Content ── -->
+    <main class="page">
+
+        <!-- Page header -->
+        <div class="sec-head">
+            <div class="sec-tag">Loaded via Fetch API · players.json</div>
+            <h1 class="sec-title">Top <span>Players</span></h1>
+            <div class="sec-line"></div>
+        </div>
+
+        <!-- Meta bar -->
+        <div class="players-meta">
+            <span class="players-meta-tag">⚔ Warriors fetched from players.json</span>
+            <span class="players-meta-count">
+                Total: <strong id="playerCount">—</strong>
+            </span>
+        </div>
+
+        <!--
+            playersContainer — this div is EMPTY in the HTML.
+            All player cards are injected here dynamically
+            by players.js using the Fetch API.
+        -->
+        <div id="playersContainer" class="players-grid">
+            <!-- Loading state shown before fetch completes -->
+            <div class="fetch-loading" style="grid-column:1/-1;">
+                ⚔ Loading warriors...
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <div class="footer-name">Dark Valor: Arena</div>
+        <p>© 2025 <span>Grand Tournament</span> · All Rights Reserved</p>
+    </footer>
+
+    <!--
+        players.js is loaded here — AFTER the HTML.
+        It uses fetch("players.json") to load data,
+        then calls displayPlayers() to build the cards.
+    -->
+    <script src="players.js"></script>
+</body>
+</html>

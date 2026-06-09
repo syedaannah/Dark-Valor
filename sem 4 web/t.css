@@ -1,0 +1,965 @@
+﻿/* ============================================================
+   t.css — Dark Valor: Arena · Tournament & Inventory Styles
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&display=swap');
+
+/* ── Animations ── */
+@keyframes t-fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes t-slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes t-rowIn {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes t-pulse {
+    0%,100% {
+        box-shadow: 0 0 10px rgba(201,162,39,0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 24px rgba(201,162,39,0.7);
+    }
+}
+
+@keyframes t-expandLine {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 60px;
+    }
+}
+
+@keyframes t-flash {
+    0% {
+        background: rgba(232,35,10,0.18);
+    }
+
+    100% {
+        background: transparent;
+    }
+}
+
+/* ── Navbar ── */
+.t-navbar {
+    animation: t-slideDown 0.6s ease both;
+}
+
+/* ── Shared page wrappers ── */
+.t-page, .inv-page {
+    padding: 100px 6% 80px;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, var(--dark) 0%, rgba(8,3,3,0.55) 30%, rgba(8,3,3,0.55) 70%, var(--dark) 100%), url('game.jpg') center center / cover no-repeat fixed;
+}
+
+.t-inner, .inv-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* ── Shared headers ── */
+.t-header, .inv-header {
+    text-align: center;
+    margin-bottom: 44px;
+    opacity: 0;
+    animation: t-fadeUp 0.7s 0.15s ease forwards;
+}
+
+    .t-header .sec-title span,
+    .inv-header .sec-title span {
+        color: #e8230a;
+    }
+
+    .t-header .sec-line,
+    .inv-header .sec-line {
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #e8230a, #c9a227);
+        margin: 0 auto;
+        animation: t-expandLine 0.8s 0.6s ease forwards;
+    }
+
+/* ── Shared grids ── */
+.t-grid {
+    grid-template-columns: 400px 1fr;
+}
+
+.inv-grid {
+    grid-template-columns: 380px 1fr;
+}
+
+.t-grid, .inv-grid {
+    display: grid;
+    gap: 36px;
+    align-items: start;
+}
+
+/* ── Shared form boxes ── */
+.t-form-box, .inv-form-box {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    border-top: 3px solid #e8230a;
+    padding: 32px 28px;
+    position: sticky;
+    top: 80px;
+    opacity: 0;
+    animation: t-fadeUp 0.7s 0.3s ease forwards;
+}
+
+/* Form heading elements */
+.t-form-tag, .inv-form-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: #e8230a;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.t-form-title, .inv-form-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.3rem;
+    color: #f0e8d8;
+    margin: 0 0 6px;
+}
+
+.t-form-line, .inv-form-line {
+    width: 44px;
+    height: 2px;
+    background: linear-gradient(90deg, #e8230a, #c9a227);
+    margin-bottom: 26px;
+}
+
+/* ── Shared badge (slot / item count) ── */
+.t-slot-badge, .inv-count-badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(201,162,39,0.06);
+    border: 1px solid rgba(201,162,39,0.25);
+    padding: 10px 14px;
+    margin-bottom: 22px;
+}
+
+.t-slot-label, .inv-count-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+}
+
+.t-slot-count, .inv-count-val {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: #c9a227;
+}
+
+    .t-slot-count.full {
+        color: #e8230a;
+    }
+
+/* ── Shared fields ── */
+.t-field, .inv-field {
+    margin-bottom: 18px;
+}
+
+    .t-field label, .inv-field label {
+        display: block;
+        font-family: 'Cinzel', serif;
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #8a7a6a;
+        margin-bottom: 7px;
+    }
+
+        .t-field label .req,
+        .inv-field label .req {
+            color: #e8230a;
+        }
+
+    .t-field input,
+    .inv-field input,
+    .inv-field select {
+        width: 100%;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(106,24,8,0.45);
+        color: #f0e8d8;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 15px;
+        padding: 11px 14px;
+        outline: none;
+        transition: border-color 0.25s, box-shadow 0.25s;
+        -webkit-appearance: none;
+    }
+
+        .t-field input:focus,
+        .inv-field input:focus,
+        .inv-field select:focus {
+            border-color: #e8230a;
+            box-shadow: 0 0 12px rgba(232,35,10,0.12);
+        }
+
+        .t-field input::placeholder,
+        .inv-field input::placeholder {
+            color: rgba(138,122,106,0.3);
+        }
+
+        .t-field input:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+    /* Select arrow */
+    .inv-field select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7a6a' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px;
+        cursor: pointer;
+    }
+
+        .inv-field select option {
+            background: #1a0505;
+            color: #f0e8d8;
+        }
+
+/* ── Shared primary buttons ── */
+.t-register-btn, .inv-add-btn {
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: #e8230a;
+    color: #fff;
+    border: 1px solid #e8230a;
+    padding: 14px 20px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+
+    .t-register-btn:hover:not(:disabled),
+    .inv-add-btn:hover {
+        box-shadow: 0 0 24px rgba(232,35,10,0.55);
+        transform: translateY(-2px);
+    }
+
+    .t-register-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .inv-add-btn:active {
+        transform: translateY(0);
+    }
+
+/* ── Shared messages ── */
+.t-msg, .inv-msg {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+    .t-msg.error, .inv-msg.error {
+        background: rgba(232,35,10,0.07);
+        border: 1px solid rgba(232,35,10,0.4);
+        color: #ff6b6b;
+    }
+
+    .t-msg.success, .inv-msg.success {
+        background: rgba(76,255,76,0.04);
+        border: 1px solid rgba(76,255,76,0.3);
+        color: #4cff4c;
+        letter-spacing: 2px;
+    }
+
+/* ── Shared secondary (clear) buttons ── */
+.t-clear-btn, .inv-clear-btn {
+    width: 100%;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: transparent;
+    color: #8a7a6a;
+    border: 1px solid rgba(106,24,8,0.35);
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: color 0.25s, border-color 0.25s;
+}
+
+    .t-clear-btn:hover, .inv-clear-btn:hover {
+        color: #e8230a;
+        border-color: #e8230a;
+    }
+
+/* ── Shared divider ── */
+.t-divider, .inv-divider {
+    border: none;
+    border-top: 1px solid rgba(106,24,8,0.3);
+    margin: 20px 0;
+}
+
+/* ── Shared right panels ── */
+.t-right, .inv-right {
+    opacity: 0;
+    animation: t-fadeUp 0.7s 0.5s ease forwards;
+}
+
+/* ── Shared stat cards ── */
+.t-stat, .inv-stat {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.t-stat {
+    padding: 16px 14px;
+}
+
+.inv-stat {
+    padding: 14px 10px;
+}
+
+    .t-stat::before, .inv-stat::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+    }
+
+.t-stat::before {
+    background: linear-gradient(90deg, #e8230a, #c9a227);
+}
+
+.inv-stat.s-weapon::before {
+    background: linear-gradient(90deg, #e8230a, #ff6b6b);
+}
+
+.inv-stat.s-armor::before {
+    background: linear-gradient(90deg, #c9a227, #f5e9c0);
+}
+
+.inv-stat.s-potion::before {
+    background: linear-gradient(90deg, #4cff4c, #00cc00);
+}
+
+.inv-stat.s-magic::before {
+    background: linear-gradient(90deg, #7b2fff, #c084fc);
+}
+
+.t-stat-val, .inv-stat-val {
+    font-family: 'Cinzel Decorative', serif;
+    color: #c9a227;
+    display: block;
+    line-height: 1;
+}
+
+.t-stat-val {
+    font-size: 1.6rem;
+}
+
+.inv-stat-val {
+    font-size: 1.5rem;
+}
+
+.t-stat-val.red {
+    color: #e8230a;
+}
+
+.t-stat-lbl, .inv-stat-lbl {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 2px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+    margin-top: 5px;
+    display: block;
+}
+
+.t-stat-lbl {
+    font-size: 9px;
+    letter-spacing: 3px;
+}
+
+.inv-stat-lbl {
+    font-size: 8px;
+}
+
+/* Stats rows */
+.t-stats-row {
+    grid-template-columns: repeat(3,1fr);
+    margin-bottom: 24px;
+}
+
+.inv-stats-row {
+    grid-template-columns: repeat(4,1fr);
+    margin-bottom: 24px;
+}
+
+.t-stats-row, .inv-stats-row {
+    display: grid;
+    gap: 12px;
+}
+
+/* ── Shared panel boxes ── */
+.t-participants-box, .inv-box {
+    background: #0f0f0f;
+    border: 1px solid #6a1808;
+    border-top: 3px solid #c9a227;
+    overflow: hidden;
+}
+
+.t-panel-label, .inv-box-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid rgba(106,24,8,0.4);
+    background: rgba(201,162,39,0.05);
+}
+
+    .t-panel-label span, .inv-box-label span {
+        font-family: 'Cinzel', serif;
+        font-size: 10px;
+        letter-spacing: 4px;
+        color: #c9a227;
+        text-transform: uppercase;
+    }
+
+/* ── Live dot ── */
+.t-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+}
+
+    .t-live::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4cff4c;
+        box-shadow: 0 0 6px #4cff4c;
+        animation: t-pulse 1.8s ease-in-out infinite;
+    }
+
+/* ── Shared empty states ── */
+.t-empty, .inv-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.t-empty-icon, .inv-empty-icon {
+    font-size: 2.6rem;
+    opacity: 0.25;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.t-empty p, .inv-empty p {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #8a7a6a;
+    text-transform: uppercase;
+}
+
+/* ═══════════════════════════════
+   TOURNAMENT-SPECIFIC
+═══════════════════════════════ */
+
+/* Participants list */
+.t-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.t-list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(106,24,8,0.2);
+    animation: t-rowIn 0.35s ease both;
+    transition: background 0.2s;
+}
+
+    .t-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .t-list-item:hover {
+        background: rgba(232,35,10,0.04);
+    }
+
+    .t-list-item.new-entry {
+        animation: t-rowIn 0.35s ease both, t-flash 1s ease forwards;
+    }
+
+/* Number badges */
+.t-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(106,24,8,0.4);
+    color: #8a7a6a;
+    flex-shrink: 0;
+}
+
+    .t-num.n1 {
+        border-color: #c9a227;
+        color: #c9a227;
+        background: rgba(201,162,39,0.08);
+    }
+
+    .t-num.n2 {
+        border-color: #c0c0c0;
+        color: #c0c0c0;
+        background: rgba(192,192,192,0.06);
+    }
+
+    .t-num.n3 {
+        border-color: #cd7f32;
+        color: #cd7f32;
+        background: rgba(205,127,50,0.06);
+    }
+
+.t-player-info {
+    flex: 1;
+}
+
+.t-player-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: #f0e8d8;
+    letter-spacing: 0.5px;
+    display: block;
+}
+
+.t-player-meta {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: #8a7a6a;
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+}
+
+    .t-player-meta span {
+        color: #c9a227;
+        font-size: 11px;
+    }
+
+/* Shared delete/remove buttons */
+.t-remove-btn, .inv-del-btn {
+    background: none;
+    border: 1px solid rgba(232,35,10,0.2);
+    color: rgba(232,35,10,0.4);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.t-remove-btn {
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.inv-del-btn {
+    width: 100%;
+}
+
+    .t-remove-btn:hover, .inv-del-btn:hover {
+        color: #fff;
+        border-color: #e8230a;
+        background: rgba(232,35,10,0.15);
+    }
+
+/* Full banner */
+.t-full-banner {
+    display: none;
+    margin: 0 20px;
+    padding: 12px 16px;
+    background: rgba(232,35,10,0.08);
+    border: 1px solid rgba(232,35,10,0.35);
+    color: #ff6b6b;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+/* ═══════════════════════════════
+   INVENTORY-SPECIFIC
+═══════════════════════════════ */
+
+.inv-qty-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* Filter bar */
+.inv-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.inv-filter-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: transparent;
+    color: #8a7a6a;
+    border: 1px solid rgba(106,24,8,0.35);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+    .inv-filter-btn:hover,
+    .inv-filter-btn.active {
+        color: #c9a227;
+        border-color: #c9a227;
+        background: rgba(201,162,39,0.08);
+    }
+
+/* Item cards grid */
+.inv-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: rgba(106,24,8,0.2);
+}
+
+.inv-item-card {
+    background: #0f0f0f;
+    padding: 18px 16px;
+    position: relative;
+    animation: t-rowIn 0.35s ease both;
+    transition: background 0.2s;
+}
+
+    .inv-item-card:hover {
+        background: #141414;
+    }
+
+    .inv-item-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+    }
+
+    .inv-item-card.type-weapon::before {
+        background: #e8230a;
+    }
+
+    .inv-item-card.type-armor::before {
+        background: #c9a227;
+    }
+
+    .inv-item-card.type-potion::before {
+        background: #4cff4c;
+    }
+
+    .inv-item-card.type-magic::before {
+        background: #7b2fff;
+    }
+
+.inv-type-icon {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.85;
+}
+
+.inv-item-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #f0e8d8;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.inv-item-type {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+}
+
+    .inv-item-type.type-weapon {
+        color: #e8230a;
+    }
+
+    .inv-item-type.type-armor {
+        color: #c9a227;
+    }
+
+    .inv-item-type.type-potion {
+        color: #4cff4c;
+    }
+
+    .inv-item-type.type-magic {
+        color: #c084fc;
+    }
+
+.inv-item-qty {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    color: #8a7a6a;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+    .t-grid, .inv-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .t-form-box, .inv-form-box {
+        position: static;
+    }
+
+    .inv-stats-row {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .t-stats-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .inv-items-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* ════════════════════════════════════════════════════
+   LIGHT MODE for t.css (Tournament + Inventory)
+   Applied via: html.light-mode
+════════════════════════════════════════════════════ */
+
+/* Page background — keep game.jpg but lighten overlay */
+html.light-mode .t-page,
+html.light-mode .inv-page {
+    background: linear-gradient(to bottom, rgba(242,236,226,0.3) 0%, rgba(242,236,226,0.6) 50%, rgba(242,236,226,0.3) 100%), url('game.jpg') center center / cover no-repeat fixed;
+}
+
+/* Form boxes */
+html.light-mode .t-form-box,
+html.light-mode .inv-form-box {
+    background: #ffffff;
+    border-color: #c8a888;
+    border-top-color: #c0180a;
+}
+
+/* Form titles */
+html.light-mode .t-form-title,
+html.light-mode .inv-form-title { color: #180e04; }
+
+html.light-mode .t-form-tag,
+html.light-mode .inv-form-tag   { color: #c0180a; }
+
+/* Labels */
+html.light-mode .t-field label,
+html.light-mode .inv-field label { color: #6b5540; }
+
+/* Inputs and selects inside t-field / inv-field */
+html.light-mode .t-field input,
+html.light-mode .inv-field input,
+html.light-mode .inv-field select,
+html.light-mode .t-field select {
+    background: #f5efe6 !important;
+    border-color: #c8a888 !important;
+    color: #180e04 !important;
+}
+html.light-mode .t-field input::placeholder,
+html.light-mode .inv-field input::placeholder { color: #9a8070 !important; }
+html.light-mode .inv-field select option,
+html.light-mode .t-field select option { background: #f5efe6; color: #180e04; }
+
+html.light-mode .t-field input:focus,
+html.light-mode .inv-field input:focus,
+html.light-mode .inv-field select:focus {
+    border-color: #c0180a !important;
+    box-shadow: 0 0 10px rgba(192,24,10,.12) !important;
+}
+
+/* Slot / count badge */
+html.light-mode .t-slot-badge,
+html.light-mode .inv-count-badge {
+    background: rgba(154,114,16,.07);
+    border-color: rgba(154,114,16,.3);
+}
+html.light-mode .t-slot-label,
+html.light-mode .inv-count-label { color: #6b5540; }
+
+/* Stat cards */
+html.light-mode .t-stat,
+html.light-mode .inv-stat {
+    background: #ffffff;
+    border-color: #c8a888;
+}
+html.light-mode .t-stat-lbl,
+html.light-mode .inv-stat-lbl { color: #6b5540; }
+
+/* Participants / inventory box */
+html.light-mode .t-participants-box,
+html.light-mode .inv-box {
+    background: #ffffff;
+    border-color: #c8a888;
+    border-top-color: #9a7210;
+}
+
+/* Panel label bar */
+html.light-mode .t-panel-label,
+html.light-mode .inv-box-label {
+    background: rgba(154,114,16,.06);
+    border-bottom-color: rgba(200,168,136,.4);
+}
+html.light-mode .t-panel-label span,
+html.light-mode .inv-box-label span { color: #9a7210; }
+
+/* List items */
+html.light-mode .t-list-item {
+    border-bottom-color: rgba(200,168,136,.3);
+    color: #180e04;
+}
+html.light-mode .t-list-item:hover { background: rgba(192,24,10,.04); }
+
+html.light-mode .t-player-name { color: #180e04; }
+html.light-mode .t-player-meta { color: #6b5540; }
+
+/* Number badges */
+html.light-mode .t-num { border-color: #c8a888; color: #6b5540; }
+html.light-mode .t-num.n1 { border-color: #9a7210; color: #9a7210; background: rgba(154,114,16,.08); }
+html.light-mode .t-num.n2 { border-color: #888; color: #888; background: rgba(136,136,136,.06); }
+html.light-mode .t-num.n3 { border-color: #a06030; color: #a06030; background: rgba(160,96,48,.06); }
+
+/* Remove / delete buttons */
+html.light-mode .t-remove-btn,
+html.light-mode .inv-del-btn {
+    border-color: rgba(192,24,10,.25);
+    color: rgba(192,24,10,.5);
+}
+html.light-mode .t-remove-btn:hover,
+html.light-mode .inv-del-btn:hover {
+    color: #fff;
+    border-color: #c0180a;
+    background: rgba(192,24,10,.15);
+}
+
+/* Clear / secondary buttons */
+html.light-mode .t-clear-btn,
+html.light-mode .inv-clear-btn {
+    color: #6b5540;
+    border-color: rgba(200,168,136,.5);
+}
+html.light-mode .t-clear-btn:hover,
+html.light-mode .inv-clear-btn:hover { color: #c0180a; border-color: #c0180a; }
+
+/* Divider */
+html.light-mode .t-divider,
+html.light-mode .inv-divider { border-top-color: rgba(200,168,136,.4); }
+
+/* Filter buttons */
+html.light-mode .inv-filter-bar .inv-filter-btn {
+    color: #6b5540;
+    border-color: rgba(200,168,136,.4);
+}
+html.light-mode .inv-filter-bar .inv-filter-btn:hover,
+html.light-mode .inv-filter-bar .inv-filter-btn.active {
+    color: #9a7210;
+    border-color: #9a7210;
+    background: rgba(154,114,16,.08);
+}
+
+/* Inventory item cards */
+html.light-mode .inv-items-grid { background: rgba(200,168,136,.2); }
+html.light-mode .inv-item-card  { background: #ffffff; }
+html.light-mode .inv-item-card:hover { background: #faf6f0; }
+html.light-mode .inv-item-name  { color: #180e04; }
+html.light-mode .inv-item-qty   { color: #6b5540; }
+
+/* Full banner */
+html.light-mode .t-full-banner {
+    background: rgba(192,24,10,.07);
+    border-color: rgba(192,24,10,.3);
+    color: #c0180a;
+}
+
+/* Empty states */
+html.light-mode .t-empty p,
+html.light-mode .inv-empty p { color: #6b5540; }
