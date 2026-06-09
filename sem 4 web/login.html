@@ -115,10 +115,23 @@
                 pwInput.classList.remove('invalid'); hideErr(pwErr);
             }
 
+            //check login authenticity
             if (valid) {
     const email = document.getElementById('loginEmail').value.trim();
     const pw = pwInput.value.trim();
     const msg = document.getElementById('successMsg');
+    const pwErr = document.getElementById('pwErr');
+
+    const USERS = [
+        { email: "admin@arena.com", pw: "admin123", role: "admin" },
+        { email: "user@arena.com",  pw: "user123",  role: "user"  }
+    ];
+    const match = USERS.find(u => u.email === email && u.pw === pw);
+    if (!match) {
+        pwErr.textContent = "⚠ Invalid email or password";
+        showErr(pwErr);
+        return;
+    }
 
     // Admin credentials
     if (email === "admin@arena.com" && pw === "admin123") {
