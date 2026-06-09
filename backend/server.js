@@ -119,14 +119,19 @@ app.delete("/registrations/:id", async (req, res) => {
 
 
 app.post("/chat", async (req, res) => {
+  try {
     const r = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.GROK_KEY}`
-        },
-        body: JSON.stringify({ model: "grok-3-mini", messages: req.body.messages })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROK_KEY}`
+      },
+      body: JSON.stringify({ model: "grok-3-mini", messages: req.body.messages })
     });
     const data = await r.json();
     res.json(data);
+  } catch(e) {
+    console.error("Chat error:", e.message);
+    res.status(500).json({ error: e.message });
+  }
 });
