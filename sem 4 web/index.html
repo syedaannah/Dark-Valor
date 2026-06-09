@@ -515,133 +515,86 @@
 
 
     <!-- Chatbot JS -->
-    <script>
-        (function () {
-            const chatToggle = document.getElementById('chat-toggle');
-            const chatWindow = document.getElementById('chat-window');
-            const chatClose = document.getElementById('chat-close-btn');
-            const chatInput = document.getElementById('chat-input');
-            const chatSend = document.getElementById('chat-send');
-            const chatMessages = document.getElementById('chat-messages');
-            const chatBadge = document.getElementById('chat-badge');
-            const quickBtns = document.querySelectorAll('.quick-btn');
+<script>
+(function () {
+    const GEMINI_KEY = "AQ.Ab8RN6I_Klegw_sTdl1K5eHciZHnClBuoircz7PQWIGhzsgXZg";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 
-            if (!chatToggle) return;
+    const SYSTEM = `You are the Arena Oracle, a dramatic medieval fantasy chatbot for "Dark Valor: Arena", a fighting tournament website. 
+Keep replies short (2-4 sentences max). Use occasional ⚔️ 🏆 emojis. Speak in a slightly dramatic tone.
+The site has these pages: Home, Schedule, Players, Leaderboard, Tournament (registration), Inventory, Contact.
+Tournament registration fee is PKR 500 via EasyPaisa. Admin email: admin@arena.com.
+If asked anything unrelated to the arena/gaming, stay in character and redirect to arena topics.`;
 
-            let chatOpen = false;
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose  = document.getElementById('chat-close-btn');
+    const chatInput  = document.getElementById('chat-input');
+    const chatSend   = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatBadge  = document.getElementById('chat-badge');
+    const quickBtns  = document.querySelectorAll('.quick-btn');
 
-            // ── KNOWLEDGE BASE ────────────────────────────────────────
-            const KB = [
-                {
-                    keys: ['faction', 'legion', 'dynasty', 'herald', 'heralds', 'join', 'which faction'],
-                    reply: '⚔️ Three factions battle for dominance:<br><br><strong style="color:var(--gold)">⚔️ Legion</strong> — Raw strength & iron discipline. For warriors who fight head-on.<br><strong style="color:var(--gold)">🐉 Dynasty</strong> — Speed & cunning. Masters of deception and swift strikes.<br><strong style="color:var(--gold)">👁️ Heralds</strong> — Magic & strategy. They bend the battlefield to their will.'
-                },
-                {
-                    keys: ['register', 'registration', 'sign up', 'signup', 'join', 'enter tournament', 'how to join'],
-                    reply: '📋 To register as a fighter, head to the <a href="contact.html" style="color:var(--gold)">Contact page</a> and fill out the form. Choose your faction, enter your power level, and select <em>"Fighter Registration"</em> as the subject. The Arena Commander will respond within 24 hours. ⚔️'
-                },
-                {
-                    keys: ['rule', 'rules', 'how to play', 'format', 'fight', 'combat', 'match'],
-                    reply: '📜 The tournament runs in <strong>3 brutal rounds</strong>. 6 elite warriors enter — only 1 claims the Eternal Throne. Matchups are seeded by power level. Win 2 out of 3 bouts to advance. No mercy rounds. Check the <a href="tournament.html" style="color:var(--gold)">Tournament page</a> for the full bracket.'
-                },
-                {
-                    keys: ['leaderboard', 'ranking', 'rank', 'top', 'best', 'standing', 'score'],
-                    reply: '🏆 The current rankings of all warriors are displayed on the <a href="lead.html" style="color:var(--gold)">Leaderboard page</a>. Rankings update after every match. Only the strongest survive at the top!'
-                },
-                {
-                    keys: ['schedule', 'when', 'next match', 'upcoming', 'date', 'time', 'fixtures'],
-                    reply: '📅 All upcoming battles are listed on the <a href="schedule.html" style="color:var(--gold)">Schedule page</a>. Tournaments are held weekly. Arrive early — the arena gates open 30 minutes before each bout.'
-                },
-                {
-                    keys: ['player', 'players', 'fighter', 'warriors', 'who', 'characters', 'roster'],
-                    reply: '⚔️ Meet all elite fighters on the <a href="players.html" style="color:var(--gold)">Players page</a>. Each warrior profile includes their faction, power level, win record, and signature fighting style.'
-                },
-                {
-                    keys: ['inventory', 'weapon', 'gear', 'equipment', 'item', 'shop', 'sword', 'armor'],
-                    reply: '🗡️ The arsenal of the arena is displayed in the <a href="inventory.html" style="color:var(--gold)">Inventory page</a>. Browse weapons, armor, and special gear. Each item carries its own power and rarity.'
-                },
-                {
-                    keys: ['contact', 'email', 'reach', 'message', 'phone', 'location', 'address', 'arena', 'where', 'map'],
-                    reply: '📍 Reach the Arena Command at <strong>arena@shadowfight4.com</strong> or call <strong>+1 (666) SHADOW-4</strong>.<br>Open Mon–Fri 10:00–22:00, Weekends 08:00–24:00.<br>Visit the <a href="contact.html" style="color:var(--gold)">Contact page</a> to see our location on the map.'
-                },
-                {
-                    keys: ['tournament', 'bracket', 'season', 'prize', 'champion', 'throne', 'win'],
-                    reply: '👑 Season IV of the Grand Tournament is underway! 6 warriors clash across 3 rounds for the <strong>Eternal Throne</strong>. View the full bracket and results on the <a href="tournament.html" style="color:var(--gold)">Tournament page</a>.'
-                },
-                {
-                    keys: ['power', 'level', 'power level', 'stat', 'strength', 'how strong'],
-                    reply: '💪 Power Level determines your seeding in the tournament bracket. The higher your power, the tougher your early opponents. Enter your power level when registering via the <a href="contact.html" style="color:var(--gold)">Contact page</a>.'
-                },
-                {
-                    keys: ['hello', 'hi', 'hey', 'greetings', 'sup', 'yo', 'hola', 'salute'],
-                    reply: '⚔️ Greetings, warrior! The Arena Oracle stands ready to serve. Ask me about fighters, factions, the tournament, schedule, or how to register. What do you seek?'
-                },
-                {
-                    keys: ['help', 'what can you do', 'options', 'menu', 'commands'],
-                    reply: '🔮 I can answer questions about:<br>• <strong>Factions</strong> — Legion, Dynasty, Heralds<br>• <strong>Registration</strong> — How to join<br>• <strong>Tournament rules</strong> & bracket<br>• <strong>Schedule</strong> — Upcoming matches<br>• <strong>Players</strong> — Fighter profiles<br>• <strong>Leaderboard</strong> — Current rankings<br>• <strong>Inventory</strong> — Weapons & gear<br>• <strong>Contact</strong> — Location & email'
-                },
-                {
-                    keys: ['thanks', 'thank you', 'thx', 'ty', 'appreciate', 'good', 'great', 'nice', 'awesome'],
-                    reply: '🙏 The Oracle is honored to serve, warrior. May your blade stay sharp and your enemies fall swiftly. Is there anything else you wish to know?'
-                },
-                {
-                    keys: ['discord', 'social', 'youtube', 'twitter', 'instagram', 'follow'],
-                    reply: '🎮 Follow the Arena on Discord, YouTube, Twitter/X, and Instagram! Find all the links in the <a href="contact.html" style="color:var(--gold)">Contact page</a> under "Follow the Arena".'
-                }
-            ];
+    if (!chatToggle) return;
+    let chatOpen = false;
+    const history = [];
 
-            function getReply(input) {
-                const lower = input.toLowerCase();
-                for (const entry of KB) {
-                    if (entry.keys.some(k => lower.includes(k))) {
-                        return entry.reply;
-                    }
-                }
-                return "🔮 The Oracle's vision is unclear on that matter, warrior. Try asking about <strong>factions</strong>, <strong>registration</strong>, <strong>tournament rules</strong>, <strong>schedule</strong>, <strong>players</strong>, or <strong>contact info</strong>.";
-            }
+    function toggleChat() {
+        chatOpen = !chatOpen;
+        chatWindow.classList.toggle('open', chatOpen);
+        chatBadge.style.display = chatOpen ? 'none' : 'flex';
+        if (chatOpen) chatInput.focus();
+    }
+    chatToggle.addEventListener('click', toggleChat);
+    chatClose.addEventListener('click', toggleChat);
 
-            // ── TOGGLE ────────────────────────────────────────────────
-            function toggleChat() {
-                chatOpen = !chatOpen;
-                chatWindow.classList.toggle('open', chatOpen);
-                chatBadge.style.display = chatOpen ? 'none' : 'flex';
-                if (chatOpen) chatInput.focus();
-            }
+    function appendMsg(text, role) {
+        const div = document.createElement('div');
+        div.className = 'msg ' + role;
+        div.innerHTML = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return div;
+    }
 
-            chatToggle.addEventListener('click', toggleChat);
-            chatClose.addEventListener('click', toggleChat);
+    async function sendMessage(text) {
+        if (!text.trim()) return;
+        appendMsg(text, 'user');
+        chatInput.value = '';
+        chatSend.disabled = true;
 
-            // ── MESSAGES ──────────────────────────────────────────────
-            function appendMsg(text, role) {
-                const div = document.createElement('div');
-                div.className = 'msg ' + role;
-                div.innerHTML = text;
-                chatMessages.appendChild(div);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                return div;
-            }
+        const typing = appendMsg('Oracle is channeling...', 'typing');
 
-            function sendMessage(text) {
-                if (!text.trim()) return;
-                appendMsg(text, 'user');
-                chatInput.value = '';
+        history.push({ role: 'user', parts: [{ text }] });
 
-                // Simulate typing delay
-                const typingDiv = appendMsg('Oracle is channeling...', 'typing');
-                setTimeout(() => {
-                    typingDiv.remove();
-                    appendMsg(getReply(text), 'bot');
-                }, 600);
-            }
-
-            chatSend.addEventListener('click', () => sendMessage(chatInput.value));
-            chatInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system_instruction: { parts: [{ text: SYSTEM }] },
+                    contents: history
+                })
             });
-            quickBtns.forEach(btn => {
-                btn.addEventListener('click', () => sendMessage(btn.dataset.q));
-            });
-        })();
-    </script>
+            const data = await res.json();
+            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "⚔️ The Oracle's connection falters... try again.";
+            history.push({ role: 'model', parts: [{ text: reply }] });
+            typing.remove();
+            appendMsg(reply, 'bot');
+        } catch(e) {
+            typing.remove();
+            appendMsg("⚔️ The Oracle is unreachable. Check your connection.", 'bot');
+        }
+
+        chatSend.disabled = false;
+    }
+
+    chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+    });
+    quickBtns.forEach(btn => btn.addEventListener('click', () => sendMessage(btn.dataset.q)));
+})();
+</script>
 </body>
 </html>
