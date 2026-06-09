@@ -136,7 +136,7 @@ document.getElementById("r-submit").addEventListener("click", async () => {
   };
   if (!body.name || !body.email) return alert("Name and email are required.");
   try {
-    const res = await fetch("http://localhost:3000/registrations", {
+    const res = await fetch("https://dark-valor-production.up.railway.app/registrations", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
