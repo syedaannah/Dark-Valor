@@ -6,11 +6,9 @@
     <title>Login — Dark Valor: Arena</title>
     <link rel="stylesheet" href="style.css" />
     <script src="theme.js"></script>
-
     <link rel="stylesheet" href="style2.css" />
 </head>
 <body>
-
     <nav class="navbar">
         <div class="logo">
             <span class="logo-top">Dark Valor</span>
@@ -20,24 +18,19 @@
 
     <div class="auth-page">
         <div class="auth-box">
-
-            <!-- Animated character -->
             <div class="char-peek">
                 <div class="char-body" id="charBody">🥷</div>
                 <div class="char-label" id="charLabel">Watching your password...</div>
             </div>
-
             <div class="auth-title">Enter the <span>Arena</span></div>
             <div class="auth-sub">Login to your warrior account</div>
 
             <form id="loginForm" novalidate>
-
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="text" id="loginEmail" placeholder="warrior@arena.com" />
                     <div class="err-msg" id="emailErr">⚠ Email is required</div>
                 </div>
-
                 <div class="form-group">
                     <label>Password</label>
                     <div class="pw-wrap">
@@ -46,12 +39,8 @@
                     </div>
                     <div class="err-msg" id="pwErr">⚠ Password is required</div>
                 </div>
-
                 <button type="submit" class="btn-submit-auth">⚔️ Enter the Arena</button>
-
-                <div class="success-msg" id="successMsg">
-                    ✦ Welcome back, Warrior. Entering the Arena... ✦
-                </div>
+                <div class="success-msg" id="successMsg"></div>
             </form>
 
             <div class="auth-switch">New warrior? <a href="signup.html">Create an account</a></div>
@@ -68,35 +57,23 @@
         const toggle = document.getElementById('pwToggle');
         const charBody = document.getElementById('charBody');
         const charLabel = document.getElementById('charLabel');
-
         let pwVisible = false;
 
-        // ── Password toggle + character animation ──
         toggle.addEventListener('click', () => {
             pwVisible = !pwVisible;
             if (pwVisible) {
-                // password visible — ninja looks AWAY (embarrassed)
-                pwInput.type = 'text';
-                toggle.textContent = '👁️';
-                charBody.classList.add('hidden');
-                charLabel.classList.remove('hidden');
-                charLabel.textContent = 'Looking away...';
+                pwInput.type = 'text'; toggle.textContent = '👁️';
+                charBody.classList.add('hidden'); charLabel.textContent = 'Looking away...';
             } else {
-                // password hidden — ninja peeks and WATCHES
-                pwInput.type = 'password';
-                toggle.textContent = '🙈';
-                charBody.classList.remove('hidden');
-                charLabel.classList.remove('hidden');
-                charLabel.textContent = 'Watching your password...';
+                pwInput.type = 'password'; toggle.textContent = '🙈';
+                charBody.classList.remove('hidden'); charLabel.textContent = 'Watching your password...';
             }
         });
 
-        // ── Helpers ──
         function showErr(el) { el.classList.add('show'); }
         function hideErr(el) { el.classList.remove('show'); }
 
-        // ── Submit ──
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             let valid = true;
 
@@ -115,37 +92,42 @@
                 pwInput.classList.remove('invalid'); hideErr(pwErr);
             }
 
-            //check login authenticity
-            if (valid) {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pw = pwInput.value.trim();
-    const msg = document.getElementById('successMsg');
-    const pwErr = document.getElementById('pwErr');
+            if (!valid) return;
 
-    const USERS = [
-        { email: "admin@arena.com", pw: "admin123", role: "admin" },
-        { email: "user@arena.com",  pw: "user123",  role: "user"  }
-    ];
-    const match = USERS.find(u => u.email === email && u.pw === pw);
-    if (!match) {
-        pwErr.textContent = "⚠ Invalid email or password";
-        showErr(pwErr);
-        return;
-    }
+            const email = emailEl.value.trim();
+            const password = pwInput.value.trim();
+            const msg = document.getElementById('successMsg');
+            const pwErrEl = document.getElementById('pwErr');
 
-    // Admin credentials
-    if (email === "admin@arena.com" && pw === "admin123") {
-    localStorage.setItem('dv_user', 'admin');
-    msg.textContent = "✦ Welcome, Admin. Entering Control Panel... ✦";
-    msg.style.display = 'block';
-    setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
-} else {
-    localStorage.setItem('dv_user', 'user');
-    msg.textContent = "✦ Welcome back, Warrior. Entering the Arena... ✦";
-    msg.style.display = 'block';
-    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-}
-}
+            try {
+                const res = await fetch("https://dark-valor-production.up.railway.app/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    pwErrEl.textContent = "⚠ " + data.error;
+                    showErr(pwErrEl);
+                    return;
+                }
+
+                localStorage.setItem('arena_logged_in', data.role);
+
+                if (data.role === 'admin') {
+                    msg.textContent = "✦ Welcome, Admin. Entering Control Panel... ✦";
+                    msg.style.display = 'block';
+                    setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
+                } else {
+                    msg.textContent = "✦ Welcome back, Warrior. Entering the Arena... ✦";
+                    msg.style.display = 'block';
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                }
+            } catch {
+                pwErrEl.textContent = "⚠ Cannot reach server. Try again.";
+                showErr(pwErrEl);
+            }
         });
     </script>
 </body>

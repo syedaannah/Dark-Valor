@@ -25,6 +25,7 @@ MongoClient.connect(MONGO_URI).then(client => {
 });
 
 const reg = () => db.collection("registrations");
+const users = () => db.collection("users");
 
 // ── PLAYERS ──
 const players = [
@@ -44,6 +45,28 @@ app.get("/players", (req, res) => {
   res.json(r);
 });
 
+// ── AUTH ──
+app.post("/signup", async (req, res) => {
+  try {
+    const { email, password, firstName, lastName } = req.body;
+    if (!email || !password) return res.status(400).json({ error: "Email and password required" });
+    const existing = await users().findOne({ email });
+    if (existing) return res.status(400).json({ error: "Email already registered" });
+    await users().insertOne({ email, password, firstName, lastName, role: "user", createdAt: new Date() });
+    res.status(201).json({ message: "Account created" });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (email === "admin@arena.com" && password === "admin123") return res.json({ role: "admin" });
+    const user = await users().findOne({ email, password });
+    if (!user) return res.status(401).json({ error: "Invalid email or password" });
+    res.json({ role: "user" });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // ── STRIPE PAYMENT ──
 app.post("/create-payment-intent", async (req, res) => {
   try {
@@ -53,9 +76,7 @@ app.post("/create-payment-intent", async (req, res) => {
       metadata: { tournament: req.body.tournament || "Season IV" }
     });
     res.json({ clientSecret: intent.client_secret });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
-  }
+  } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── REGISTRATIONS CRUD ──
@@ -122,4 +143,4 @@ app.delete("/registrations/:id", async (req, res) => {
     if (!result.deletedCount) return res.status(404).json({ error: "Not found" });
     res.json({ message: "Deleted" });
   } catch(e) { res.status(500).json({ error: e.message }); }
-}); 
+});
