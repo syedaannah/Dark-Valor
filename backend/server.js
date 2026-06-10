@@ -122,4 +122,4 @@ app.delete("/registrations/:id", async (req, res) => {
     if (!result.deletedCount) return res.status(404).json({ error: "Not found" });
     res.json({ message: "Deleted" });
   } catch(e) { res.status(500).json({ error: e.message }); }
-});
+}); 
