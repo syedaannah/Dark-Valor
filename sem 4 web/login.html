@@ -135,12 +135,12 @@
 
     // Admin credentials
     if (email === "admin@arena.com" && pw === "admin123") {
-    sessionStorage.setItem('dv_user', 'admin');
+    localStorage.setItem('dv_user', 'admin');
     msg.textContent = "✦ Welcome, Admin. Entering Control Panel... ✦";
     msg.style.display = 'block';
     setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
 } else {
-    sessionStorage.setItem('dv_user', 'user');
+    localStorage.setItem('dv_user', 'user');
     msg.textContent = "✦ Welcome back, Warrior. Entering the Arena... ✦";
     msg.style.display = 'block';
     setTimeout(() => { window.location.href = 'index.html'; }, 1500);
