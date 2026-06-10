@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "mongodb": "^6.21.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "stripe": "^14.0.0"
   }
 }
